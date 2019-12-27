@@ -9,13 +9,11 @@ def video_to_frames(video_path):
 
     vidcap = cv2.VideoCapture(str(video_path))
 
-    success, image = vidcap.read()
-
     frames = []
 
-    while success:
-        frames.append(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-        success, image = vidcap.read()
+    while vidcap.grab():
+        _, frame = vidcap.retrieve()
+        frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
     vidcap.release()
 
