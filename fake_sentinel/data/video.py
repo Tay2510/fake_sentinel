@@ -28,12 +28,13 @@ def video_to_frames(video_path, sampling_interval=1):
 
 
 def display_in_jupyter(video_path, width=880, height=495):
-    video = io.open(video_path, 'r+b').read()
-    encoded = base64.b64encode(video)
+    if video_path:
+        video = io.open(str(video_path), 'r+b').read()
+        encoded = base64.b64encode(video)
 
-    handle = HTML(data="""
-    <video  width={w} height={h} controls>
-        <source src="data:video/mp4;base64,{stream}" type="video/mp4" />
-    </video>""".format(w=width, h=height, stream=encoded.decode('ascii')))
+        handle = HTML(data="""
+        <video  width={w} height={h} controls>
+            <source src="data:video/mp4;base64,{stream}" type="video/mp4" />
+        </video>""".format(w=width, h=height, stream=encoded.decode('ascii')))
 
-    return handle
+        return handle
