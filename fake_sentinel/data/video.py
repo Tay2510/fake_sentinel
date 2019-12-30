@@ -51,7 +51,7 @@ def join_videos(video_path_1, video_path_2, result_path):
 def frames_to_video(frames, save_path, fps=30):
     import imageio
 
-    writer = imageio.get_writer(save_path, fps=fps)
+    writer = imageio.get_writer(save_path, fps=fps, macro_block_size=1)
 
     for f in frames:
         writer.append_data(f)
