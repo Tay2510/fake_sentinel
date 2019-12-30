@@ -3,6 +3,8 @@ import argparse
 import pandas as pd
 from pathlib import Path
 
+from kaggle_split import VALIDATION
+
 LABEL_NAME = 'metadata.json'
 
 
@@ -22,6 +24,8 @@ def create_dfdc_dataframe(sub_dir_list):
     df = df.set_index('index')
 
     df = clean_data(df)
+
+    df.loc[VALIDATION, 'split'] = 'val'
 
     return df
 
