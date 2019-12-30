@@ -21,6 +21,8 @@ def create_dfdc_dataframe(sub_dir_list):
 
     df = df.set_index('index')
 
+    df = clean_data(df)
+
     return df
 
 
@@ -39,6 +41,20 @@ def load_partial_dataframe(label_file):
     df['original'] = df['original'].apply(lambda x: simplify(x))
 
     return df
+
+
+def clean_data(df):
+    sample_without_video_files = [
+        'wipjitfmta',
+        'wpuxmawbkj',
+        'pvohowzowy',
+        'innmztffzd',
+        'cfxiikrhep',
+        'dzjjtfwiqc',
+        'zzfhqvpsyp',
+        'glleqxulnn'
+    ]
+    return df.drop(sample_without_video_files)
 
 
 def main(argv):
