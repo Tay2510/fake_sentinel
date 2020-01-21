@@ -1,8 +1,6 @@
 import pandas as pd
 from pathlib import Path
 
-from fake_sentinel.data.kaggle_split import VALIDATION
-
 SOURCE_DIR = '/home/jeremy/data/kaggle/dfdc/train/'
 
 METADATA_FILE = Path(__file__).parent / 'dfdc.csv'
@@ -14,5 +12,3 @@ def load_dfdc_dataframe(metadata_file=METADATA_FILE, source_dir=SOURCE_DIR):
     df['filename'] = df['filename'].apply(lambda x: source_dir + x)
 
     return df
-
-

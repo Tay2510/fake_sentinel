@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 from pathlib import Path
 
-from kaggle_split import VALIDATION
+from split import VALIDATION
 
 LABEL_NAME = 'metadata.json'
 
