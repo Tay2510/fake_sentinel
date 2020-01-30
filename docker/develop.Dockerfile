@@ -37,7 +37,13 @@ RUN pip --no-cache-dir install --upgrade \
     # Deep Learning
     torch \
     torchvision \
+    # -------------------------
+    # Hyperparemeter Tuning
     ray[tune] \
+    hyperopt \
+    bayesian-optimization \
+    nevergrad \
+    scikit-optimize \
     # -------------------------
     # Utilities
     glances[gpu]
