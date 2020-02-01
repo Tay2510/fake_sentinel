@@ -43,7 +43,7 @@ def run_pipeline(home_dir, sampling_interval, gpu_batch_limit=30):
 
     total = len(df)
 
-    for i, (sample_id, row) in enumerate(df[:10].iterrows()):
+    for i, (sample_id, row) in enumerate(df.iterrows()):
         start = time.time()
         save_dir = home_dir / sample_id
         save_dir.mkdir(exist_ok=True)
