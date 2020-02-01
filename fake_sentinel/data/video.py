@@ -6,25 +6,30 @@ from pathlib import Path
 from IPython.display import HTML
 
 
-def video_to_frames(video_path, sampling_interval=1):
+def video_to_frames(video_path, sampling_interval=1, return_index=False):
     if not Path(video_path).is_file():
         raise FileNotFoundError
 
     vidcap = cv2.VideoCapture(str(video_path))
 
     frames = []
-    frame_count = 0
+    frame_indices = []
+    frame_index = -1
 
     while vidcap.grab():
-        frame_count += 1
+        frame_index += 1
 
-        if frame_count % sampling_interval == 0:
+        if frame_index % sampling_interval == 0:
             _, frame = vidcap.retrieve()
             frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            frame_indices.append(frame_index)
 
     vidcap.release()
 
-    return np.array(frames)
+    if return_index:
+        return np.array(frames), np.array(frame_indices)
+    else:
+        return np.array(frames)
 
 
 def video_to_jupyter(video_path, width=704, height=396):
