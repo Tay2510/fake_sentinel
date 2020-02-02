@@ -46,17 +46,21 @@ def run_pipeline(home_dir, sampling_interval, gpu_batch_limit=30):
     for i, (sample_id, row) in enumerate(df.iterrows()):
         start = time.time()
         save_dir = home_dir / sample_id
-        save_dir.mkdir(exist_ok=True)
 
-        boxes, probs, landmarks, indices = face_extractor.process(row['filename'], sampling_interval=sampling_interval)
+        if save_dir.is_dir() and len(list(save_dir.glob('*.pkl'))) > 0:
+            print('{:}/{:}'.format(i, total), sample_id, 'already processed')
+        else:
+            save_dir.mkdir(exist_ok=True)
 
-        save_pickle(boxes, save_dir / 'boxes.pkl')
-        save_pickle(probs, save_dir / 'probs.pkl')
-        save_pickle(landmarks, save_dir / 'landmarks.pkl')
-        save_pickle(indices, save_dir / 'indices.pkl')
+            boxes, probs, landmarks, indices = face_extractor.process(row['filename'], sampling_interval=sampling_interval)
 
-        elapse = time.time() - start
-        print('{:}/{:}'.format(i, total), sample_id, '{} frames in {:.2f} sec'.format(len(indices), elapse))
+            save_pickle(boxes, save_dir / 'boxes.pkl')
+            save_pickle(probs, save_dir / 'probs.pkl')
+            save_pickle(landmarks, save_dir / 'landmarks.pkl')
+            save_pickle(indices, save_dir / 'indices.pkl')
+
+            elapse = time.time() - start
+            print('{:}/{:}'.format(i, total), sample_id, '{} frames in {:.2f} sec'.format(len(indices), elapse))
 
 
 if __name__ == '__main__':
