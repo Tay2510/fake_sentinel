@@ -11,7 +11,7 @@ from fake_sentinel.utils.stuff import chunks, save_pickle
 
 
 class FaceExtractor:
-    def __init__(self, gpu_batch_limit=60):
+    def __init__(self, gpu_batch_limit=10):
         device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
         print('Running on device: {device}'.format(device=device))
         self.mtcnn = MTCNN(device=device).eval()
@@ -33,7 +33,7 @@ class FaceExtractor:
         return face_boxes, face_probs, face_landmarks, frame_indices
 
 
-def run_pipeline(home_dir, sampling_interval, gpu_batch_limit=30):
+def run_pipeline(home_dir, sampling_interval, gpu_batch_limit=10):
     home_dir = Path(home_dir)
     df = load_dfdc_dataframe()
     face_extractor = FaceExtractor(gpu_batch_limit=gpu_batch_limit)
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--save_dir')
     parser.add_argument('-i', '--interval', type=int, default=1)
-    parser.add_argument('-g', '--gpu_batch_limit', type=int, default=30)
+    parser.add_argument('-g', '--gpu_batch_limit', type=int, default=10)
 
     args = parser.parse_args(sys.argv[1:])
 
