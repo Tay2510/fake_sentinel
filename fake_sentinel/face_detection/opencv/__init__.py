@@ -1,8 +1,11 @@
 import cv2
 import numpy as np
+from pathlib import Path
 
-MODEL_FILE = 'deploy.prototxt.txt'
-WEIGHATS_FILE = 'res10_300x300_ssd_iter_140000.caffemodel'
+DIRECTORY = Path(__file__).parent
+
+MODEL_FILE = DIRECTORY / 'deploy.prototxt.txt'
+WEIGHATS_FILE = DIRECTORY / 'res10_300x300_ssd_iter_140000.caffemodel'
 
 CHANNEL_MEAN = (104.0, 117.0, 123.0)
 #CHANNEL_MEAN = (104.0, 177.0, 123.0)
@@ -10,7 +13,7 @@ CHANNEL_MEAN = (104.0, 117.0, 123.0)
 
 class CVFaceDetector:
     def __init__(self, model_file=MODEL_FILE, weights_file=WEIGHATS_FILE, input_shape=(300, 300)):
-        self.net = cv2.dnn.readNetFromCaffe(model_file, weights_file)
+        self.net = cv2.dnn.readNetFromCaffe(str(model_file), str(weights_file))
         self.input_shape = input_shape
 
     def detect(self, image, threshold=0.7):
