@@ -16,7 +16,7 @@ class CVFaceDetector:
         self.net = cv2.dnn.readNetFromCaffe(str(model_file), str(weights_file))
         self.input_shape = input_shape
 
-    def detect(self, image, threshold=0.7):
+    def detect(self, image, threshold=0.5):
         h, w, _ = image.shape
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
