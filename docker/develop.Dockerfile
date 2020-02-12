@@ -38,6 +38,10 @@ RUN pip --no-cache-dir install --upgrade \
     torch \
     torchvision \
     # -------------------------
+    # Data Augmentation
+    imgaug \
+    kornia \
+    # -------------------------
     # Hyperparemeter Tuning
     ray[tune] \
     hyperopt \

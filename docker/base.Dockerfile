@@ -22,7 +22,6 @@ RUN pip --no-cache-dir install --upgrade \
     # Image Processing
     opencv-contrib-python \
     scikit-image \
-    imgaug \
     pillow \
     imageio \
     imageio-ffmpeg \
