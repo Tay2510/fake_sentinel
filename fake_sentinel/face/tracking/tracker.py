@@ -14,6 +14,7 @@ class Sort(object):
         self.min_hits = min_hits
         self.trackers = []
         self.frame_count = 0
+        self.obj_count = 0
         self.iou_threshold = iou_threshold
 
     def update(self, dets):
@@ -50,8 +51,9 @@ class Sort(object):
 
         # create and initialise new trackers for unmatched detections
         for i in unmatched_dets:
-            trk = KalmanBoxTracker(dets[i, :])
+            trk = KalmanBoxTracker(dets[i, :], self.obj_count)
             self.trackers.append(trk)
+            self.obj_count += 1
         i = len(self.trackers)
 
         for trk in reversed(self.trackers):
