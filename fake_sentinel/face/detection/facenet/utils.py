@@ -2,7 +2,7 @@ import pickle
 from pathlib import Path
 from collections import namedtuple
 
-RESULT_DIR = Path('/home/jeremy/data/kaggle/dfdc_faces')
+RESULT_DIR = Path('/home/jeremy/data/kaggle/dfdc_faces_100_frames')
 
 FaceNetResult = namedtuple('FaceNetResult', ['indices', 'boxes', 'probs', 'landmarks'])
 
