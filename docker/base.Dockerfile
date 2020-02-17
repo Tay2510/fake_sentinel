@@ -18,6 +18,7 @@ RUN pip --no-cache-dir install --upgrade \
     scipy \
     sklearn \
     pandas \
+    dask[complete] \
     # -------------------------
     # Image Processing
     opencv-contrib-python \
