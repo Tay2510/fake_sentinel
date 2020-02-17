@@ -10,7 +10,7 @@ from fake_sentinel.utils import parallelize_dataframe
 IMAGE_ROOT_DIR = Path('/home/jeremy/data/kaggle/dfdc_face_crops')
 
 
-def extract_face_images_from_video(video_file_path, data_dir=IMAGE_ROOT_DIR):
+def extract_face_images_from_video(video_file_path, data_dir=IMAGE_ROOT_DIR, downsample=False):
 
     sample_id = Path(video_file_path).stem
     sample_dir = Path(data_dir) / sample_id
@@ -30,7 +30,7 @@ def extract_face_images_from_video(video_file_path, data_dir=IMAGE_ROOT_DIR):
     for n, face_id in enumerate(sampled_tracked_faces):
         face_crops = crop_faces(frames, tracked_faces[face_id], tracked_frame_indices[face_id])
 
-        stage_face_crops(face_crops, sample_dir / str(n))
+        stage_face_crops(face_crops, sample_dir / str(n), downsample=downsample)
 
 
 if __name__ == '__main__':
@@ -40,12 +40,22 @@ if __name__ == '__main__':
 
     args = parser.parse_args(sys.argv[1:])
 
-    def map_function(df):
-        return df.filename.apply(lambda x: extract_face_images_from_video(x, args.data_dir))
-
     if not Path(args.data_dir).is_dir():
         Path(args.data_dir).mkdir()
 
     dataframe = load_dfdc_dataframe()
 
-    parallelize_dataframe(dataframe, map_function, n_cores=args.processes)
+    dataframe_real = dataframe[dataframe['label'] == 'REAL']
+    dataframe_fake = dataframe[dataframe['label'] == 'FAKE']
+
+    def map_real(df):
+        return df.filename.apply(lambda x: extract_face_images_from_video(x, args.data_dir, downsample=False))
+
+    def map_fake(df):
+        return df.filename.apply(lambda x: extract_face_images_from_video(x, args.data_dir, downsample=True))
+
+    print('Staging REAL face crops from {:,} videos ...\n'.format(len(dataframe_real)))
+    parallelize_dataframe(dataframe_real, map_real, n_cores=args.processes)
+
+    print('Staging FAKE face crops from {:,} videos (with down-sampling) ...\n'.format(len(dataframe_fake)))
+    parallelize_dataframe(dataframe_fake, map_fake, n_cores=args.processes)

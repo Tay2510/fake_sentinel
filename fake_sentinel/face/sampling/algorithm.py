@@ -87,16 +87,17 @@ def crop_faces(frames, tracked_face, tracked_frame_index):
     return face_crops
 
 
-def stage_face_crops(face_crops, crop_dir):
+def stage_face_crops(face_crops, crop_dir, downsample=False):
     crop_dir = Path(crop_dir)
 
     if not crop_dir.is_dir():
         crop_dir.mkdir()
 
     for n, crop in enumerate(face_crops):
-        save_path = crop_dir / '{}.png'.format(n)
-        img = Image.fromarray(crop)
-        img.save(str(save_path))
+        if n % 2 == 0 or not downsample:
+            save_path = crop_dir / '{}.png'.format(n)
+            img = Image.fromarray(crop)
+            img.save(str(save_path))
 
 
 def calculate_average_object_ratio(boxes, frame_shape):
