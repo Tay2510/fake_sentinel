@@ -22,8 +22,11 @@ def chunks(l, batch_size):
 
 
 def parallelize_dataframe(df, func, n_cores=4):
-    df_split = np.array_split(df, n_cores)
-    pool = Pool(n_cores)
-    pool.map(func, df_split)
-    pool.close()
-    pool.join()
+    if len(df) == 0:
+        return
+    else:
+        df_split = np.array_split(df, n_cores)
+        pool = Pool(n_cores)
+        pool.map(func, df_split)
+        pool.close()
+        pool.join()

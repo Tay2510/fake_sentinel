@@ -23,14 +23,15 @@ def extract_face_images_from_video(video_file_path, data_dir=IMAGE_ROOT_DIR, dow
 
     tracked_faces, tracked_frame_indices = get_tracked_faces(frames, facenet_results)
 
-    df_scores = score_faces(tracked_faces, frames.shape)
+    if len(tracked_faces) > 0:
+        df_scores = score_faces(tracked_faces, frames.shape)
 
-    sampled_tracked_faces = sample_tracked_faces(df_scores)
+        sampled_tracked_faces = sample_tracked_faces(df_scores)
 
-    for n, face_id in enumerate(sampled_tracked_faces):
-        face_crops = crop_faces(frames, tracked_faces[face_id], tracked_frame_indices[face_id])
+        for n, face_id in enumerate(sampled_tracked_faces):
+            face_crops = crop_faces(frames, tracked_faces[face_id], tracked_frame_indices[face_id])
 
-        stage_face_crops(face_crops, sample_dir / str(n), downsample=downsample)
+            stage_face_crops(face_crops, sample_dir / str(n), downsample=downsample)
 
 
 if __name__ == '__main__':
@@ -43,7 +44,10 @@ if __name__ == '__main__':
     if not Path(args.data_dir).is_dir():
         Path(args.data_dir).mkdir()
 
+    finished_samples = [x.name for x in Path(args.data_dir).iterdir() if x.is_dir()]
+
     dataframe = load_dfdc_dataframe()
+    dataframe = dataframe.loc[dataframe.index.difference(finished_samples)]
 
     dataframe_real = dataframe[dataframe['label'] == 'REAL']
     dataframe_fake = dataframe[dataframe['label'] == 'FAKE']
