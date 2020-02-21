@@ -7,10 +7,8 @@ from fake_sentinel.face.detection.facenet.utils import load_raw_results
 from fake_sentinel.face.sampling.algorithm import *
 from fake_sentinel.utils import parallelize_dataframe
 
-IMAGE_ROOT_DIR = Path('/home/jeremy/data/kaggle/dfdc_face_crops')
 
-
-def extract_face_images_from_video(video_file_path, data_dir=IMAGE_ROOT_DIR, downsample=False):
+def extract_face_images_from_video(video_file_path, data_dir, downsample=False):
 
     sample_id = Path(video_file_path).stem
     sample_dir = Path(data_dir) / sample_id
