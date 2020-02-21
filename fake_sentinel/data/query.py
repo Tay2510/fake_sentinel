@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-from fake_sentinel.data.split import NO_FACE_CROPS
+from fake_sentinel.data.data_utils import clean_data
 
 SOURCE_DIR = '/home/jeremy/data/kaggle/dfdc/train/'
 CROP_DIR = '/home/jeremy/data/kaggle/dfdc_face_crops'
@@ -25,21 +25,3 @@ def load_crop_dataframe(metadata_file=METADATA_FILE, crop_dir=CROP_DIR):
     df = clean_data(df)
 
     return df
-
-
-def clean_data(dataframe):
-    return dataframe.loc[dataframe.index.difference(NO_FACE_CROPS)]
-
-
-def count_faces(dir_name):
-    return len([str(f.name) for f in Path(dir_name).iterdir() if f.is_dir()])
-
-
-def build_crop_table(dir_name):
-    face_ids = [str(f.name) for f in Path(dir_name).iterdir() if f.is_dir()]
-    table = {}
-    for i in face_ids:
-        crop_list = list((Path(dir_name) / i).glob('**/*.png'))
-        table[int(i)] = [str(p.name) for p in crop_list]
-
-    return table
