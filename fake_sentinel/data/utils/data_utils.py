@@ -5,8 +5,6 @@ from pathlib import Path
 
 from fake_sentinel.data.split import NO_FACE_CROPS
 
-CROP_DIR = '/home/jeremy/data/kaggle/dfdc_face_crops'
-
 
 def clean_data(dataframe):
     return dataframe.loc[dataframe.index.difference(NO_FACE_CROPS)]

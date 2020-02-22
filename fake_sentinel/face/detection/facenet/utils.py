@@ -2,13 +2,14 @@ import pickle
 from pathlib import Path
 from collections import namedtuple
 
-RESULT_DIR = Path('/home/jeremy/data/kaggle/dfdc_faces_100_frames')
+from fake_sentinel.data.paths import FACENET_RESULT_DIR
+
 
 FaceNetResult = namedtuple('FaceNetResult', ['indices', 'boxes', 'probs', 'landmarks'])
 
 
 def load_raw_results(sample_id):
-    sample_dir = RESULT_DIR / sample_id
+    sample_dir = Path(FACENET_RESULT_DIR) / sample_id
 
     boxes = pickle.load(Path(sample_dir / 'boxes.pkl').open('rb'))
     indices = pickle.load(Path(sample_dir / 'indices.pkl').open('rb'))
@@ -30,4 +31,3 @@ def merge_batch(batch_result):
         for data in batch:
             result.append(data)
     return result
-
