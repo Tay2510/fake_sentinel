@@ -2,15 +2,12 @@ import pickle
 import random
 from pathlib import Path
 
-from fake_sentinel.data.utils.data_utils import CROP_DIR
-
-
-CROP_TABLE_FILE = Path(__file__).parents[0] / 'resources' / 'crop_table.pkl'
+from fake_sentinel.data.paths import FACE_CROP_DIR, FACE_CROP_TABLE
 
 
 class CropSampler:
     def __init__(self):
-        with CROP_TABLE_FILE.open('rb') as f:
+        with Path(FACE_CROP_TABLE).open('rb') as f:
             self.crop_table = pickle.load(f)
 
     def sample_from(self, sample_id):
@@ -22,4 +19,4 @@ class CropSampler:
         else:
             face_id = face_ids[0]
 
-        return Path(CROP_DIR) / sample_id / str(face_id) / random.choice(face_crops[face_id])
+        return Path(FACE_CROP_DIR) / sample_id / str(face_id) / random.choice(face_crops[face_id])
