@@ -37,6 +37,7 @@ RUN pip --no-cache-dir install --upgrade \
     # Deep Learning
     torch \
     torchvision \
+    torchsummary \
     # -------------------------
     # Data Augmentation
     imgaug \
