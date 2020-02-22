@@ -5,7 +5,7 @@ from pathlib import Path
 from fake_sentinel.data.data_utils import CROP_DIR
 
 
-CROP_TABLE_FILE = Path(__file__).parent / 'crop_table.pkl'
+CROP_TABLE_FILE = Path(__file__).parent / 'resources' / 'crop_table.pkl'
 
 
 class CropSampler:

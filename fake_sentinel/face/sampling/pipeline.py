@@ -3,9 +3,9 @@ import argparse
 
 from fake_sentinel.data.query import load_dfdc_dataframe
 from fake_sentinel.data.video import sample_video_frames
+from fake_sentinel.data.data_utils import parallelize_dataframe
 from fake_sentinel.face.detection.facenet.utils import load_raw_results
 from fake_sentinel.face.sampling.algorithm import *
-from fake_sentinel.utils import parallelize_dataframe
 
 
 def extract_face_images_from_video(video_file_path, data_dir, downsample=False):

@@ -5,7 +5,7 @@ from fake_sentinel.data.data_utils import clean_data, CROP_DIR
 
 SOURCE_DIR = '/home/jeremy/data/kaggle/dfdc/train/'
 
-METADATA_FILE = Path(__file__).parent / 'dfdc.csv'
+METADATA_FILE = Path(__file__).parent / 'resources' / 'dfdc.csv'
 
 
 def load_dfdc_dataframe(metadata_file=METADATA_FILE, source_dir=SOURCE_DIR):
