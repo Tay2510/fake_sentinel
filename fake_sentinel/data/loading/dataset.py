@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 
-from fake_sentinel.data.sampler import CropSampler
+from fake_sentinel.data.loading.sampler import CropSampler
 from fake_sentinel.data.utils.image_utils import read_image
 
 LABEL_ENCODER = {
