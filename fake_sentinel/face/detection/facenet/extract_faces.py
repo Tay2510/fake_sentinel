@@ -6,8 +6,8 @@ from pathlib import Path
 from facenet_pytorch import MTCNN
 
 from fake_sentinel.data.query import load_dfdc_dataframe
-from fake_sentinel.data.video import video_to_frames
-from fake_sentinel.utils import chunks, save_pickle
+from fake_sentinel.data.utils.video_utils import video_to_frames
+from fake_sentinel.data.utils.data_utils import chunks, save_pickle
 
 
 class FaceExtractor:

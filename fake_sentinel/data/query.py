@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-from fake_sentinel.data.data_utils import clean_data, CROP_DIR
+from fake_sentinel.data.utils.data_utils import clean_data, CROP_DIR
 
 SOURCE_DIR = '/home/jeremy/data/kaggle/dfdc/train/'
 
