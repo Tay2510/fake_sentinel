@@ -59,3 +59,9 @@ VALIDATION = [
     'oyqgwjdwaj', 'knxltsvzyu', 'sjwywglgym', 'vurjckblge', 'itfsvvmslp', 'wcssbghcpc', 'coujjnypba',
     'xmkwsnuzyq'
 ]
+
+
+NO_FACE_CROPS = [
+    'bcqrunnwhl', 'rtneymsway', 'qxuivoxvhl', 'rfrjmsfjcz', 'ukpaybhftz',
+    'eibdzfaaif', 'vfolffzflf', 'ksykhmakyy', 'zcjhobqmus', 'cwqlvzefpg'
+]
