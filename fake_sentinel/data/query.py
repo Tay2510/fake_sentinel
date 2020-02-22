@@ -8,7 +8,7 @@ from fake_sentinel.data.paths import DFDC_DATAFRAME_FILE, DFDC_TRAIN_VIDEO_DIR, 
 def load_dfdc_dataframe(metadata_file=DFDC_DATAFRAME_FILE, source_dir=DFDC_TRAIN_VIDEO_DIR):
     df = pd.read_csv(metadata_file, index_col='index')
 
-    df['filename'] = df['filename'].apply(lambda x: source_dir + x)
+    df['filename'] = df['filename'].apply(lambda x: Path(source_dir) / x)
 
     return df
 
