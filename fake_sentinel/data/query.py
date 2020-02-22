@@ -1,10 +1,9 @@
 import pandas as pd
 from pathlib import Path
 
-from fake_sentinel.data.data_utils import clean_data
+from fake_sentinel.data.data_utils import clean_data, CROP_DIR
 
 SOURCE_DIR = '/home/jeremy/data/kaggle/dfdc/train/'
-CROP_DIR = '/home/jeremy/data/kaggle/dfdc_face_crops'
 
 METADATA_FILE = Path(__file__).parent / 'dfdc.csv'
 
