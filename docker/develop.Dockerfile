@@ -38,6 +38,7 @@ RUN pip --no-cache-dir install --upgrade \
     torch \
     torchvision \
     torchsummary \
+    pretrainedmodels \
     # -------------------------
     # Data Augmentation
     imgaug \
