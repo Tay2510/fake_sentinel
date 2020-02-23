@@ -26,5 +26,7 @@ class FaceCropDataset(Dataset):
         image_file = self.sampler.sample_from(sample_id)
         image = read_image(image_file)
         label = LABEL_ENCODER[sample_label]
+        X = self.image_transforms(image)
+        y = label
 
-        return self.image_transforms(image), label
+        return X, y
