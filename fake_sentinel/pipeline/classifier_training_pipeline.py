@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from fake_sentinel.data.query import load_crop_dataframe, split_train_val
 from fake_sentinel.data.loading.dataset import FaceCropDataset
 from fake_sentinel.model.classifier import create_classifier
-from fake_sentinel.train.helpers import train_model
+from fake_sentinel.train.trainer import train_model
 from fake_sentinel.pipeline.configs import *
 
 
