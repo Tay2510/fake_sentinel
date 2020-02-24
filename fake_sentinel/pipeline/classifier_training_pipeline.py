@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 from torchsummary import summary
 
-from fake_sentinel.data.query import load_crop_dataframe
+from fake_sentinel.data.query import load_crop_dataframe, split_train_val
 from fake_sentinel.data.loading.dataset import FaceCropDataset
 from fake_sentinel.model.classifier import create_classifier
 from fake_sentinel.train.helpers import train_model
@@ -15,8 +15,7 @@ print('\nUsing device:', device)
 print('\nLoading Data...')
 df = load_crop_dataframe()
 
-train_df = df[:3000]
-val_df = df[3000:3500]
+train_df, val_df = split_train_val(df, val_fraction=VAL_FRACTION)
 
 train_dataset = FaceCropDataset(train_df, 'train')
 val_dataset = FaceCropDataset(val_df, 'val')
@@ -38,4 +37,4 @@ optimizer = torch.optim.SGD(params_to_update, lr=INITIAL_LR, momentum=MOMENTUM)
 # Training
 print('\nTraining...')
 model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader},
-                             criterion=criterion, optimizer=optimizer, device=device)
+                             criterion=criterion, optimizer=optimizer, device=device, num_epochs=EPOCHS)
