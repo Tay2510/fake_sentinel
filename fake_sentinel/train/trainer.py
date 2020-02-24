@@ -1,10 +1,11 @@
 import time
 import copy
 import torch
+from pathlib import Path
 
 
-def train_model(model, dataloaders, criterion, optimizer, device, num_epochs=10, is_inception=True):
-    val_acc_history = []
+def train_model(model, dataloaders, criterion, optimizer, device, result_dir, num_epochs=10, is_inception=True):
+    history = {'train': [], 'val': []}
 
     best_model_wts = copy.deepcopy(model.state_dict())
     lowest_loss = float('inf')
@@ -64,9 +65,9 @@ def train_model(model, dataloaders, criterion, optimizer, device, num_epochs=10,
             if phase == 'val' and epoch_loss < lowest_loss:
                 lowest_loss = epoch_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
-                torch.save(best_model_wts, 'weights.pth')
-            if phase == 'val':
-                val_acc_history.append(epoch_loss)
+                torch.save(best_model_wts, str(Path(result_dir) / 'weights.pth'))
+
+            history[phase].append(epoch_loss)
 
             phase_loss[phase] = epoch_loss
             time_elapsed = time.time() - since
@@ -82,4 +83,5 @@ def train_model(model, dataloaders, criterion, optimizer, device, num_epochs=10,
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    return model, val_acc_history
+
+    return model, history
