@@ -19,8 +19,8 @@ val_df = df[1000:1100]
 train_dataset = FaceCropDataset(train_df, 'train')
 val_dataset = FaceCropDataset(val_df, 'val')
 
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=0)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=0)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
 
 # Model
 model = create_classifier(pretrained=False)
