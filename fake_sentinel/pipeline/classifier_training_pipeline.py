@@ -26,7 +26,7 @@ val_loader = DataLoader(val_dataset, batch_size=FORWARD_BATCH_SIZE, shuffle=Fals
 
 # Model
 print('Creating Model...')
-model = create_classifier(pretrained=False)
+model = create_classifier(pretrained=True)
 model.to(device)
 
 summary(model, (3, 299, 299))
