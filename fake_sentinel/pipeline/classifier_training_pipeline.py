@@ -1,6 +1,8 @@
 import sys
 import argparse
+import json
 import torch
+from pathlib import Path
 from torch.utils.data import DataLoader
 
 from fake_sentinel.data.query import load_crop_dataframe, split_train_val
@@ -10,7 +12,10 @@ from fake_sentinel.train.trainer import train_model
 from fake_sentinel.pipeline.configs import *
 
 
-def run_pipeline(test_mode=False, num_epochs=EPOCHS):
+def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
+    result_dir = Path(result_dir)
+    result_dir.mkdir(exist_ok=False)
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print('\nUsing device:', device)
 
@@ -43,17 +48,22 @@ def run_pipeline(test_mode=False, num_epochs=EPOCHS):
     # Training
     print('\nTraining...')
     model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader},
-                                 criterion=criterion, optimizer=optimizer, device=device, num_epochs=num_epochs)
+                                 criterion=criterion, optimizer=optimizer, device=device,
+                                 result_dir=result_dir, num_epochs=num_epochs)
+
+    with open(str(result_dir / 'history.json'), 'w') as f:
+        json.dump(history, f)
 
 
 def main(argv):
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-t', '--test_mode', action='store_true', help='Run in test mode (use less data)')
+    parser.add_argument('-d', '--directory', default='result_dir', required=False, help='Directory to save training results')
 
     args = parser.parse_args(argv)
 
-    run_pipeline(args.test_mode)
+    run_pipeline(test_mode=args.test_mode, result_dir=args.directory)
 
 
 if __name__ == '__main__':
