@@ -9,7 +9,7 @@ def train_model(model, dataloaders, criterion, optimizer, device, num_epochs=10,
     best_model_wts = copy.deepcopy(model.state_dict())
     lowest_loss = float('inf')
 
-    for epoch in range(num_epochs):
+    for epoch in range(1, num_epochs + 1):
         since = time.time()
 
         phase_loss = {}
@@ -71,7 +71,7 @@ def train_model(model, dataloaders, criterion, optimizer, device, num_epochs=10,
             time_elapsed = time.time() - since
 
         print('[Epoch] {}/{}, [Loss] train: {:.4f}, val: {:.4f}, [Elapse] {:.0f}m: {:.0f}s'.format(epoch,
-                                                                                                   num_epochs - 1,
+                                                                                                   num_epochs,
                                                                                                    phase_loss['train'],
                                                                                                    phase_loss['val'],
                                                                                                    time_elapsed // 60,
