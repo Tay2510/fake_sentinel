@@ -8,21 +8,23 @@ from fake_sentinel.model.classifier import create_classifier
 from fake_sentinel.train.helpers import train_model
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print(device)
+print('Using device:', device)
 
 # Data
+print('Loading Data...')
 df = load_crop_dataframe()
 
-train_df = df[:1000]
-val_df = df[1000:1100]
+train_df = df[:3000]
+val_df = df[3000:3500]
 
 train_dataset = FaceCropDataset(train_df, 'train')
 val_dataset = FaceCropDataset(val_df, 'val')
 
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=4)
+val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False, num_workers=4)
 
 # Model
+print('Creating Model...')
 model = create_classifier(pretrained=False)
 model.to(device)
 
@@ -33,8 +35,6 @@ params_to_update = model.parameters()
 optimizer = torch.optim.SGD(params_to_update, lr=0.001, momentum=0.9)
 
 # Training
-train_model(model=model,
-            dataloaders={'train': train_loader, 'val': val_loader},
-            criterion=criterion,
-            optimizer=optimizer,
-            device=device)
+print('Training...')
+model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader},
+                             criterion=criterion, optimizer=optimizer, device=device)
