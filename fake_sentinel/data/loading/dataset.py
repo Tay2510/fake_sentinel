@@ -2,7 +2,7 @@ from torch.utils.data import Dataset
 
 from fake_sentinel.data.utils.image_utils import read_image
 from fake_sentinel.data.loading.sampler import CropSampler
-from fake_sentinel.data.loading.transforms import IMAGE_TRANSFORMS
+from fake_sentinel.data.loading.transforms import INCEPTION_TRANSFORMS
 
 LABEL_ENCODER = {
     'FAKE': 1,
@@ -13,7 +13,7 @@ LABEL_ENCODER = {
 class FaceCropDataset(Dataset):
     def __init__(self, dataframe, mode='train'):
         self.sampler = CropSampler(mode)
-        self.image_transforms = IMAGE_TRANSFORMS[mode]
+        self.image_transforms = INCEPTION_TRANSFORMS[mode]
         self.ids = dataframe.index.to_list()
         self.labels = dataframe.label.to_list()
         self.length = len(dataframe)
