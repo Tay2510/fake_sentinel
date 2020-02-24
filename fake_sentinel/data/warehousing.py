@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 from pathlib import Path
 
-from fake_sentinel.data.split import VALIDATION
+from fake_sentinel.data.tags import VALIDATION
 
 LABEL_NAME = 'metadata.json'
 

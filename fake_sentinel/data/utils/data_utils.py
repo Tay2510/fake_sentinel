@@ -3,7 +3,7 @@ import numpy as np
 from multiprocessing import Pool
 from pathlib import Path
 
-from fake_sentinel.data.split import NO_FACE_CROPS
+from fake_sentinel.data.tags import NO_FACE_CROPS
 
 
 def clean_data(dataframe):
