@@ -64,6 +64,7 @@ def train_model(model, dataloaders, criterion, optimizer, device, num_epochs=10,
             if phase == 'val' and epoch_loss < lowest_loss:
                 lowest_loss = epoch_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
+                torch.save(best_model_wts, 'weights.pth')
             if phase == 'val':
                 val_acc_history.append(epoch_loss)
 
