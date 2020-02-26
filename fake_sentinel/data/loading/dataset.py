@@ -12,7 +12,7 @@ LABEL_ENCODER = {
 
 class FaceCropDataset(Dataset):
     def __init__(self, dataframe, mode='train'):
-        self.sampler = CropSampler(mode)
+        self.sampler = CropSampler()
         self.image_transforms = INCEPTION_TRANSFORMS[mode]
         self.ids = dataframe['index'].to_list()
         self.labels = dataframe['label'].to_list()
