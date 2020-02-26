@@ -2,7 +2,7 @@ import random
 import pandas as pd
 from pathlib import Path
 
-from fake_sentinel.data.utils.data_utils import clean_data
+from fake_sentinel.data.tags import NO_FACE_CROPS
 from fake_sentinel.data.paths import DFDC_DATAFRAME_FILE, DFDC_TRAIN_VIDEO_DIR, FACE_CROP_DIR
 
 
@@ -65,6 +65,10 @@ def replace_nan_with_id(df):
 
 def get_originals(df):
     return df[df['label'] == 'REAL']
+
+
+def clean_data(df):
+    return df.loc[~df['index'].isin(NO_FACE_CROPS)]
 
 
 def shuffle_dataframe(df):
