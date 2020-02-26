@@ -36,6 +36,8 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
     train_loader = DataLoader(train_dataset, batch_size=BACKWARD_BATCH_SIZE, shuffle=True, num_workers=4)
     val_loader = DataLoader(val_dataset, batch_size=FORWARD_BATCH_SIZE, shuffle=False, num_workers=4)
 
+    print('Face Crops: Train = {:,} | Val = {:,}'.format(len(train_df), len(val_df)))
+
     # Model
     print('\nCreating Model...')
     model = create_classifier(pretrained=True)
