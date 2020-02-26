@@ -6,7 +6,7 @@ from fake_sentinel.data.paths import DFDC_DATAFRAME_FILE, DFDC_TRAIN_VIDEO_DIR, 
 
 
 def load_dfdc_dataframe(metadata_file=DFDC_DATAFRAME_FILE, source_dir=DFDC_TRAIN_VIDEO_DIR, replace_nan=True):
-    df = pd.read_csv(metadata_file, index_col='index')
+    df = pd.read_csv(metadata_file)
 
     df['filename'] = df['filename'].apply(lambda x: Path(source_dir) / x)
 
@@ -17,7 +17,7 @@ def load_dfdc_dataframe(metadata_file=DFDC_DATAFRAME_FILE, source_dir=DFDC_TRAIN
 
 
 def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DIR, replace_nan=True):
-    df = pd.read_csv(metadata_file, index_col='index')
+    df = pd.read_csv(metadata_file)
 
     df['filename'] = df['filename'].apply(lambda x: Path(crop_dir) / Path(x).stem)
 
@@ -30,18 +30,18 @@ def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DI
 
 
 def split_train_val(df, val_fraction=0.1):
-    test_originals = get_originals(df[df.split == 'val']).index.to_list()   # 200 REAL from public test
-    test_samples = df[df.original.isin(test_originals)].index.to_list()
+    test_originals = get_originals(df[df.split == 'val'])['original'].to_list()   # 200 REAL from public test
+    test_samples = df[df.original.isin(test_originals)]['index'].to_list()
 
-    train_originals = get_originals(df.loc[df.index.difference(test_samples)]).index.to_list()
+    train_originals = get_originals(df.loc[~df['index'].isin(test_samples)])['original'].to_list()
 
     cut_off = int(val_fraction * len(train_originals))
 
     val_originals = train_originals[-cut_off:] + test_originals
     train_originals = train_originals[:-cut_off]
 
-    df_train = df[df.original.isin(train_originals)]
-    df_val = df[df.original.isin(val_originals)]
+    df_train = df[df['original'].isin(train_originals)]
+    df_val = df[df['original'].isin(val_originals)]
 
     assert len(df_train) + len(df_val) == len(df)
 
@@ -49,9 +49,13 @@ def split_train_val(df, val_fraction=0.1):
 
 
 def replace_nan_with_id(df):
-    original_ids = df[df.original.isnull()].original.index
-    df.loc[original_ids, 'original'] = original_ids
+    original_ids = df[df.original.isnull()]['index']
+    df.loc[df['index'].isin(original_ids), 'original'] = original_ids
 
 
 def get_originals(df):
-    return df[df.index.to_series() == df.original]
+    return df[df['label'] == 'REAL']
+
+
+def shuffle_dataframe(df):
+    return df.sample(frac=1).reset_index(drop=True)
