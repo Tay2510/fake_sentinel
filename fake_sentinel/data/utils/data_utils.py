@@ -3,12 +3,6 @@ import numpy as np
 from multiprocessing import Pool
 from pathlib import Path
 
-from fake_sentinel.data.tags import NO_FACE_CROPS
-
-
-def clean_data(dataframe):
-    return dataframe.loc[dataframe.index.difference(NO_FACE_CROPS)]
-
 
 def count_faces(dir_name):
     return len([str(f.name) for f in Path(dir_name).iterdir() if f.is_dir()])
