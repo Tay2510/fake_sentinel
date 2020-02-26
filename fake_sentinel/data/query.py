@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 from pathlib import Path
 
@@ -29,12 +30,13 @@ def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DI
     return df
 
 
-def split_train_val(df, val_fraction=0.1):
-    test_originals = get_originals(df[df.split == 'val'])['original'].to_list()   # 200 REAL from public test
-    test_samples = df[df.original.isin(test_originals)]['index'].to_list()
+def split_train_val(df, val_fraction=0.1, seed=1337):
+    df_originals = get_originals(df)
 
-    train_originals = get_originals(df.loc[~df['index'].isin(test_samples)])['original'].to_list()
+    test_originals = list(get_originals(df[df.split == 'val'])['original'].unique())   # 200 REAL from public test
+    train_originals = list(df_originals[~df_originals['original'].isin(test_originals)]['original'].unique())
 
+    random.Random(seed).shuffle(train_originals)
     cut_off = int(val_fraction * len(train_originals))
 
     val_originals = train_originals[-cut_off:] + test_originals
