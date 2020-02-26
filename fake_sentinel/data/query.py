@@ -17,7 +17,7 @@ def load_dfdc_dataframe(metadata_file=DFDC_DATAFRAME_FILE, source_dir=DFDC_TRAIN
     return df
 
 
-def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DIR, replace_nan=True):
+def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DIR, replace_nan=True, up_sampling=True):
     df = pd.read_csv(metadata_file)
 
     df['filename'] = df['filename'].apply(lambda x: Path(crop_dir) / Path(x).stem)
@@ -26,6 +26,9 @@ def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DI
 
     if replace_nan:
         replace_nan_with_id(df)
+
+    if up_sampling:
+        df = up_sampling_real_faces(df)
 
     return df
 
@@ -48,6 +51,11 @@ def split_train_val(df, val_fraction=0.1, seed=1337):
     assert len(df_train) + len(df_val) == len(df)
 
     return df_train, df_val
+
+
+def up_sampling_real_faces(df, factor=4):
+    real = get_originals(df)
+    return df.append([real] * factor, ignore_index=True)
 
 
 def replace_nan_with_id(df):
