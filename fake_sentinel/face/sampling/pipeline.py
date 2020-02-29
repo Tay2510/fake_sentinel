@@ -2,8 +2,8 @@ import sys
 import argparse
 
 from fake_sentinel.data.query import load_dfdc_dataframe
-from data.utils.video_utils import sample_video_frames
-from data.utils.data_utils import parallelize_dataframe
+from fake_sentinel.data.utils.video_utils import sample_video_frames
+from fake_sentinel.data.utils.data_utils import parallelize_dataframe
 from fake_sentinel.face.detection.facenet.utils import load_raw_results
 from fake_sentinel.face.sampling.algorithm import *
 
