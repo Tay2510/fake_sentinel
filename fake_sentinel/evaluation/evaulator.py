@@ -1,11 +1,24 @@
 import torch
+from sklearn.metrics import log_loss
 
 from fake_sentinel.face.detection.facenet.utils import merge_batch, FaceNetResult
 from fake_sentinel.face.detection.facenet.extract_faces import FaceExtractor
-from fake_sentinel.data.utils.video_utils import sample_video_frames
 from fake_sentinel.face.sampling.algorithm import get_tracked_faces, score_faces, sample_tracked_faces, crop_faces
 from fake_sentinel.data.loading.transforms import INCEPTION_TRANSFORMS
+from fake_sentinel.data.utils.video_utils import sample_video_frames
+from fake_sentinel.data.query import load_dfdc_dataframe
+from fake_sentinel.data.loading.dataset import LABEL_ENCODER
 from fake_sentinel.model.classifier import create_classifier
+
+
+def evaluate(model_path):
+    df = load_dfdc_dataframe()
+    df = df[df['split'] == 'val']
+
+    predicts = predict_videos(list(df['filename']), model_path)
+    targets = df['label'].apply(lambda x: LABEL_ENCODER[x])
+
+    return log_loss(targets, list(predicts.values()))
 
 
 def predict_videos(filenames, model_path):
