@@ -30,7 +30,7 @@ def predict_videos(filenames, model_path):
 
     detection_results = detect_faces(filenames)
 
-    for video_path, detections in detection_results.items():
+    for video_path, detections in zip(filenames, detection_results):
         frames = sample_video_frames(video_path, detections.indices)
         tracked_faces, tracked_frame_indices = get_tracked_faces(frames, detections)
 
@@ -58,12 +58,12 @@ def predict_videos(filenames, model_path):
 
 def detect_faces(filenames):
     face_extractor = FaceExtractor(gpu_batch_limit=10)
-    results = {}
+    results = []
 
     for video_path in filenames:
         face_boxes, face_probs, _, frame_indices = face_extractor.process(video_path, 3)
         face_boxes, face_probs = merge_batch(face_boxes), merge_batch(face_probs)
 
-        results[video_path] = FaceNetResult(frame_indices, face_boxes, face_probs, None)
+        results.append(FaceNetResult(frame_indices, face_boxes, face_probs, None))
 
     return results
