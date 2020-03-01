@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from sklearn.metrics import log_loss
 
 from fake_sentinel.face.detection.facenet.utils import merge_batch, FaceNetResult
@@ -15,10 +16,14 @@ def evaluate(model_path):
     df = load_dfdc_dataframe()
     df = df[df['split'] == 'val']
 
-    predicts = predict_videos(list(df['filename']), model_path)
     targets = df['label'].apply(lambda x: LABEL_ENCODER[x])
+    targets = np.array(targets, dtype=float)
 
-    return log_loss(targets, list(predicts.values()))
+    predicts = predict_videos(list(df['filename']), model_path)
+    predicts = list(predicts.values())
+    predicts = np.array(predicts, dtype=float)
+
+    return log_loss(targets, predicts)
 
 
 def predict_videos(filenames, model_path):
@@ -51,7 +56,7 @@ def predict_videos(filenames, model_path):
 
             results[video_path] = confidence
         else:
-            results[video_path] = 1.0
+            results[video_path] = 1
 
     return results
 
