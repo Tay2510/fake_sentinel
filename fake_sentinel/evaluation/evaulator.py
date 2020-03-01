@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import random
 from sklearn.metrics import log_loss
 
 from fake_sentinel.face.detection.facenet.utils import merge_batch, FaceNetResult
@@ -15,7 +16,6 @@ from fake_sentinel.model.classifier import create_classifier
 def evaluate(model_path):
     df = load_dfdc_dataframe()
     df = df[df['split'] == 'val']
-
     targets = df['label'].apply(lambda x: LABEL_ENCODER[x])
     targets = np.array(targets, dtype=float)
 
@@ -26,7 +26,7 @@ def evaluate(model_path):
     return log_loss(targets, predicts)
 
 
-def predict_videos(filenames, model_path):
+def predict_videos(filenames, model_path, max_prediction_per_face=10):
     results = {}
     transform = INCEPTION_TRANSFORMS['val']
     classifier = create_classifier(pretrained=False)
@@ -48,13 +48,14 @@ def predict_videos(filenames, model_path):
 
             for n, face_id in enumerate(sampled_tracked_faces):
                 face_crops = crop_faces(frames, tracked_faces[face_id], tracked_frame_indices[face_id])
-                X = transform(face_crops[0])    # TODO: predict multiple face crops
-                logits = classifier(X.unsqueeze(0))
-                p = torch.nn.functional.softmax(logits, dim=-1).detach().numpy()
-
-                confidence = max(confidence, p.flatten()[1])
+                face_crops = random.sample(face_crops, max_prediction_per_face)
+                X = torch.stack([transform(f) for f in face_crops])
+                logits = classifier(X)
+                p = torch.nn.functional.softmax(logits, dim=-1).detach().numpy().mean(axis=0)
+                confidence = max(confidence, p[1])
 
             results[video_path] = confidence
+
         else:
             results[video_path] = 1
 
