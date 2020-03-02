@@ -5,7 +5,7 @@ import torch
 from pathlib import Path
 from torch.utils.data import DataLoader
 
-from fake_sentinel.data.query import load_crop_dataframe, split_train_val
+from fake_sentinel.data.query import load_crop_dataframe, split_train_val, over_sampling_real_faces
 from fake_sentinel.data.loading.dataset import FaceCropDataset
 from fake_sentinel.model.classifier import create_classifier
 from fake_sentinel.train.trainer import train_model
@@ -24,6 +24,8 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
     df = load_crop_dataframe()
 
     train_df, val_df = split_train_val(df, val_fraction=VAL_FRACTION)
+
+    val_df = over_sampling_real_faces(val_df)
 
     if test_mode:
         train_df = train_df[:3000]
