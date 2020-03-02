@@ -26,14 +26,14 @@ def evaluate(model_path):
     return log_loss(targets, predicts)
 
 
-def predict_videos(filenames, model_path, max_prediction_per_face=10):
+def predict_videos(filenames, model_path, sampling_interval=7, max_prediction_per_face=10):
     results = {}
     transform = INCEPTION_TRANSFORMS['val']
     classifier = create_classifier(pretrained=False)
     classifier.load_state_dict(torch.load(model_path))
     classifier.eval()
 
-    detection_results = detect_faces(filenames)
+    detection_results = detect_faces(filenames, sampling_interval)
 
     for video_path, detections in zip(filenames, detection_results):
         frames = sample_video_frames(video_path, detections.indices)
@@ -62,12 +62,12 @@ def predict_videos(filenames, model_path, max_prediction_per_face=10):
     return results
 
 
-def detect_faces(filenames):
+def detect_faces(filenames, sampling_interval):
     face_extractor = FaceExtractor(gpu_batch_limit=10)
     results = []
 
     for video_path in filenames:
-        face_boxes, face_probs, _, frame_indices = face_extractor.process(video_path, 3)
+        face_boxes, face_probs, _, frame_indices = face_extractor.process(video_path, sampling_interval)
         face_boxes, face_probs = merge_batch(face_boxes), merge_batch(face_probs)
 
         results.append(FaceNetResult(frame_indices, face_boxes, face_probs, None))
