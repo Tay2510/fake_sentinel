@@ -13,20 +13,20 @@ from fake_sentinel.data.loading.dataset import LABEL_ENCODER
 from fake_sentinel.model.classifier import create_classifier
 
 
-def evaluate(model_path):
+def evaluate(model_path, sampling_interval=10, max_prediction_per_face=5):
     df = load_dfdc_dataframe()
     df = df[df['split'] == 'val']
     targets = df['label'].apply(lambda x: LABEL_ENCODER[x])
     targets = np.array(targets, dtype=float)
 
-    predicts = predict_videos(list(df['filename']), model_path)
+    predicts = predict_videos(list(df['filename']), model_path, sampling_interval, max_prediction_per_face)
     predicts = list(predicts.values())
     predicts = np.array(predicts, dtype=float)
 
     return log_loss(targets, predicts)
 
 
-def predict_videos(filenames, model_path, sampling_interval=7, max_prediction_per_face=10):
+def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_per_face=5):
     results = {}
     transform = INCEPTION_TRANSFORMS['val']
     classifier = create_classifier(pretrained=False)
@@ -48,8 +48,12 @@ def predict_videos(filenames, model_path, sampling_interval=7, max_prediction_pe
 
             for n, face_id in enumerate(sampled_tracked_faces):
                 face_crops = crop_faces(frames, tracked_faces[face_id], tracked_frame_indices[face_id])
-                face_crops = random.sample(face_crops, max_prediction_per_face)
+
+                if max_prediction_per_face < len(face_crops):
+                    face_crops = random.sample(face_crops, max_prediction_per_face)
+
                 X = torch.stack([transform(f) for f in face_crops])
+
                 logits = classifier(X)
                 p = torch.nn.functional.softmax(logits, dim=-1).detach().numpy().mean(axis=0)
                 confidence = max(confidence, p[1])
