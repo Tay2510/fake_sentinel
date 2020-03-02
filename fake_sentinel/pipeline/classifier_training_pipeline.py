@@ -23,7 +23,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
     print('\nLoading Data...')
     df = load_crop_dataframe()
 
-    train_df, val_df = split_train_val(df, val_fraction=VAL_FRACTION)
+    train_df, val_df = split_train_val(df, val_fraction=VAL_FRACTION, seed=VAL_SEED)
 
     val_df = over_sampling_real_faces(val_df)
 
@@ -45,15 +45,10 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
     model = create_classifier(pretrained=True)
     model.to(device)
 
-    criterion = torch.nn.CrossEntropyLoss()
-    params_to_update = model.parameters()
-    optimizer = torch.optim.SGD(params_to_update, lr=INITIAL_LR, momentum=MOMENTUM)
-
     # Training
     print('\nTraining...')
     model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader},
-                                 criterion=criterion, optimizer=optimizer, device=device,
-                                 result_dir=result_dir, num_epochs=num_epochs)
+                                 device=device, result_dir=result_dir, num_epochs=num_epochs)
 
     with open(str(result_dir / 'history.json'), 'w') as f:
         json.dump(history, f)
