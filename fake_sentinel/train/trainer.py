@@ -3,12 +3,16 @@ import copy
 import torch
 from pathlib import Path
 
+from fake_sentinel.train.criteria import get_criteria
 
-def train_model(model, dataloaders, criterion, optimizer, device, result_dir, num_epochs=10, is_inception=True):
+
+def train_model(model, dataloaders, device, result_dir, num_epochs=10, is_inception=True):
     history = {'train': [], 'val': []}
 
     best_model_wts = copy.deepcopy(model.state_dict())
     lowest_loss = float('inf')
+
+    criterion, optimizer = get_criteria(model)
 
     for epoch in range(1, num_epochs + 1):
         since = time.time()
