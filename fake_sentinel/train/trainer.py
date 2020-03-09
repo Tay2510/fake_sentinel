@@ -29,7 +29,7 @@ def train_model(model, dataloaders, device, result_dir, num_epochs=10, is_incept
             running_loss = 0.0
 
             # Iterate over data.
-            for inputs, labels in dataloaders[phase]:
+            for i, (inputs, labels) in enumerate(dataloaders[phase]):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
