@@ -1,3 +1,4 @@
+import random
 from torch.utils.data import Dataset
 
 from fake_sentinel.data.utils.image_utils import read_image
@@ -12,11 +13,18 @@ LABEL_ENCODER = {
 
 class FaceCropDataset(Dataset):
     def __init__(self, dataframe, mode='train'):
+        dataframe = dataframe.reset_index(drop=True)
         self.sampler = CropSampler()
         self.image_transforms = INCEPTION_TRANSFORMS[mode]
         self.ids = dataframe['index'].to_list()
         self.labels = dataframe['label'].to_list()
+        self.fake_mapping = build_real_fake_index_mapping(dataframe)
+        self.real_indices = list(self.fake_mapping.keys())
         self.length = len(dataframe)
+
+    def sample_fake(self, real_idx):
+        candidates = self.fake_mapping[real_idx]
+        return random.choice(candidates)
 
     def __len__(self):
         return self.length
@@ -30,3 +38,14 @@ class FaceCropDataset(Dataset):
         y = label
 
         return X, y
+
+
+def build_real_fake_index_mapping(df):
+    real_idx_map = df[df['label'] == 'REAL']['index'].to_dict()
+    real_idx_map = {v: k for k, v in real_idx_map.items()}
+
+    original_groups = df[df['label'] == 'FAKE'].groupby('original', sort=False)
+
+    mapping = {real_idx_map[k]: list(v) for k, v in original_groups.groups.items()}
+
+    return mapping
