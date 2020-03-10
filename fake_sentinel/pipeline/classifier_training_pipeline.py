@@ -5,8 +5,9 @@ import torch
 from pathlib import Path
 from torch.utils.data import DataLoader
 
-from fake_sentinel.data.query import load_crop_dataframe, split_train_val, over_sampling_real_faces
+from fake_sentinel.data.query import load_crop_dataframe, split_train_val
 from fake_sentinel.data.loading.dataset import FaceCropDataset
+from fake_sentinel.data.loading.sampler import BatchSampler
 from fake_sentinel.model.classifier import create_classifier
 from fake_sentinel.train.trainer import train_model
 from fake_sentinel.pipeline.configs import *
@@ -25,20 +26,22 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
 
     train_df, val_df = split_train_val(df, val_fraction=VAL_FRACTION, seed=VAL_SEED)
 
-    val_df = over_sampling_real_faces(val_df)
-
-    if test_mode:
-        train_df = train_df[:3000]
-        val_df = val_df[:500]
-        num_epochs = 5
-
     train_dataset = FaceCropDataset(train_df, 'train')
     val_dataset = FaceCropDataset(val_df, 'val')
 
-    train_loader = DataLoader(train_dataset, batch_size=BACKWARD_BATCH_SIZE, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_dataset, batch_size=FORWARD_BATCH_SIZE, shuffle=False, num_workers=4)
+    if test_mode:
+        train_dataset.real_indices = train_dataset.real_indices[:1000]
+        val_dataset.real_indices = val_dataset.real_indices[:100]
+        num_epochs = 5
 
-    print('Face Crops: Train = {:,} | Val = {:,}'.format(len(train_df), len(val_df)))
+    train_sampler = BatchSampler(train_dataset, BACKWARD_BATCH_SIZE, shuffle=True)
+    val_sampler = BatchSampler(val_dataset, FORWARD_BATCH_SIZE, shuffle=False)
+
+    train_loader = DataLoader(train_dataset, batch_sampler=train_sampler, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_sampler=val_sampler, num_workers=4)
+
+    print('Originals: Train = {:,} | Val = {:,}'.format(len(train_dataset.real_indices),
+                                                        len(val_dataset.real_indices)))
 
     # Model
     print('\nCreating Model...')
