@@ -11,11 +11,14 @@ from fake_sentinel.data.loading.sampler import BatchSampler
 from fake_sentinel.model.classifier import create_classifier
 from fake_sentinel.train.trainer import train_model
 from fake_sentinel.pipeline.configs import *
+from fake_sentinel.evaluation.evaulator import evaluate
 
 
 def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
     result_dir = Path(result_dir)
     result_dir.mkdir(exist_ok=False)
+    model_path = result_dir / 'weights.pth'
+    history_path = result_dir / 'history.json'
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print('\nUsing device:', device)
@@ -51,10 +54,15 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
     # Training
     print('\nTraining...')
     model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader},
-                                 device=device, result_dir=result_dir, num_epochs=num_epochs)
+                                 device=device, save_path=model_path, num_epochs=num_epochs)
 
-    with open(str(result_dir / 'history.json'), 'w') as f:
+    with open(str(history_path), 'w') as f:
         json.dump(history, f)
+
+    # Evaluation
+    print('\nEvaluating...')
+    log_loss = evaluate(str(model_path))
+    print('Log loss:', log_loss)
 
 
 def main(argv):
