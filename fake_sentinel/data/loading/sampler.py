@@ -43,9 +43,9 @@ class BatchSampler(Sampler):
     def __iter__(self):
         batch = []
         if self.shuffle:
-            iter_list = [self.real_indices[i] for i in torch.randperm(len(self.real_indices)).tolist()]
+            iter_list = iter([self.real_indices[i] for i in torch.randperm(len(self.real_indices)).tolist()])
         else:
-            iter_list = self.real_indices
+            iter_list = iter(self.real_indices)
 
         for idx in iter_list:
             fake_idx = self.dataset.sample_fake(idx)
