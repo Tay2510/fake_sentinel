@@ -6,7 +6,7 @@ from pathlib import Path
 from fake_sentinel.train.criteria import get_criteria
 
 
-def train_model(model, dataloaders, device, result_dir, num_epochs=10, is_inception=True):
+def train_model(model, dataloaders, device, save_path, num_epochs=10, is_inception=True):
     history = {'train': [], 'val': []}
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -69,7 +69,7 @@ def train_model(model, dataloaders, device, result_dir, num_epochs=10, is_incept
             if phase == 'val' and epoch_loss < lowest_loss:
                 lowest_loss = epoch_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
-                torch.save(best_model_wts, str(Path(result_dir) / 'weights.pth'))
+                torch.save(best_model_wts, str(save_path))
 
             history[phase].append(epoch_loss)
 
