@@ -63,5 +63,6 @@ VALIDATION = [
 
 NO_FACE_CROPS = [
     'bcqrunnwhl', 'rtneymsway', 'qxuivoxvhl', 'rfrjmsfjcz', 'ukpaybhftz',
-    'eibdzfaaif', 'vfolffzflf', 'ksykhmakyy', 'zcjhobqmus', 'cwqlvzefpg'
+    'eibdzfaaif', 'vfolffzflf', 'ksykhmakyy', 'zcjhobqmus', 'cwqlvzefpg',
+    'jwerbdhrmu'
 ]
