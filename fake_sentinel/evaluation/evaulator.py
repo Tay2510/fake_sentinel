@@ -65,7 +65,7 @@ def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_p
             results[video_path] = confidence
 
         else:
-            results[video_path] = 1
+            results[video_path] = 0.5
 
     return results
 
