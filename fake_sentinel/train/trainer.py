@@ -1,7 +1,6 @@
 import time
 import copy
 import torch
-from pathlib import Path
 
 from fake_sentinel.train.criteria import get_criteria
 

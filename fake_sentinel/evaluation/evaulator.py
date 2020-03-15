@@ -27,10 +27,13 @@ def evaluate(model_path, sampling_interval=10, max_prediction_per_face=5):
 
 
 def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_per_face=5):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     results = {}
     transform = INCEPTION_TRANSFORMS['val']
     classifier = create_classifier(pretrained=False)
     classifier.load_state_dict(torch.load(model_path))
+    classifier.to(device)
     classifier.eval()
 
     detection_results = detect_faces(filenames, sampling_interval)
@@ -52,11 +55,12 @@ def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_p
                 if max_prediction_per_face < len(face_crops):
                     face_crops = random.sample(face_crops, max_prediction_per_face)
 
-                X = torch.stack([transform(f) for f in face_crops])
+                X = torch.stack([transform(f) for f in face_crops]).to(device)
 
-                logits = classifier(X)
-                p = torch.nn.functional.softmax(logits, dim=-1).detach().numpy().mean(axis=0)
-                confidence = max(confidence, p[1])
+                with torch.no_grad():
+                    logits = classifier(X)
+                    p = torch.nn.functional.softmax(logits, dim=-1).cpu().numpy().mean(axis=0)
+                    confidence = max(confidence, p[1])
 
             results[video_path] = confidence
 
