@@ -59,8 +59,9 @@ def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_p
 
                 with torch.no_grad():
                     logits = classifier(X)
-                    p = torch.nn.functional.softmax(logits, dim=-1).cpu().numpy().mean(axis=0)
-                    confidence = max(confidence, p[1])
+                    p = torch.sigmoid(logits.squeeze())
+
+                    confidence = max(confidence, float(p.mean().cpu().numpy()))
 
             results[video_path] = confidence
 
