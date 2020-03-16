@@ -5,7 +5,7 @@ import torch
 from fake_sentinel.train.criteria import get_criteria
 
 
-def train_model(model, dataloaders, device, save_path, num_epochs=10, is_inception=True):
+def train_model(model, dataloaders, device, save_path, num_epochs=10):
     history = {'train': [], 'val': []}
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -26,6 +26,7 @@ def train_model(model, dataloaders, device, save_path, num_epochs=10, is_incepti
                 model.eval()  # Set model to evaluate mode
 
             running_loss = 0.0
+            sample_counts = 0
 
             # Iterate over data.
             for i, (inputs, labels) in enumerate(dataloaders[phase]):
@@ -38,21 +39,9 @@ def train_model(model, dataloaders, device, save_path, num_epochs=10, is_incepti
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    # Get model outputs and calculate loss
-                    # Special case for inception because in training it has an auxiliary output. In train
-                    #   mode we calculate the loss by summing the final output and the auxiliary output
-                    #   but in testing we only consider the final output.
-                    if is_inception and phase == 'train':
-                        # From https://discuss.pytorch.org/t/how-to-optimize-inception-model-with-auxiliary-classifiers/7958
-                        outputs, aux_outputs = model(inputs)
-                        loss1 = criterion(outputs, labels)
-                        loss2 = criterion(aux_outputs, labels)
-                        loss = loss1 + 0.4 * loss2
-                    else:
-                        outputs = model(inputs)
-                        loss = criterion(outputs, labels)
+                    outputs = model(inputs).squeeze()
 
-                    _, preds = torch.max(outputs, 1)
+                    loss = criterion(outputs, labels.type_as(outputs))
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
@@ -61,8 +50,9 @@ def train_model(model, dataloaders, device, save_path, num_epochs=10, is_incepti
 
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
+                sample_counts += inputs.size(0)
 
-            epoch_loss = running_loss / len(dataloaders[phase].dataset)
+            epoch_loss = running_loss / sample_counts
 
             # deep copy the model
             if phase == 'val' and epoch_loss < lowest_loss:
