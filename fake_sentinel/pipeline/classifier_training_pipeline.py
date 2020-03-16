@@ -48,7 +48,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
 
     # Model
     print('\nCreating Model...')
-    model = create_classifier(pretrained=True)
+    model = create_classifier()
     model.to(device)
 
     # Training
