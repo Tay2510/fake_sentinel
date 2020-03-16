@@ -1,5 +1,5 @@
 import torch.nn as nn
-from pretrainedmodels import xception
+from fake_sentinel.model.cnn.xception import xception
 
 
 def create_classifier(pretrained=True):
