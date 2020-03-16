@@ -13,7 +13,7 @@ from fake_sentinel.data.loading.dataset import LABEL_ENCODER
 from fake_sentinel.model.classifier import create_classifier
 
 
-def evaluate(model_path, sampling_interval=10, max_prediction_per_face=5):
+def evaluate(model_path, sampling_interval=5, max_prediction_per_face=20):
     df = load_dfdc_dataframe()
     df = df[df['split'] == 'val']
     targets = df['label'].apply(lambda x: LABEL_ENCODER[x])
