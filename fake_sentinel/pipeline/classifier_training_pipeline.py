@@ -2,6 +2,7 @@ import sys
 import argparse
 import json
 import torch
+import time
 from pathlib import Path
 from torch.utils.data import DataLoader
 
@@ -14,7 +15,7 @@ from fake_sentinel.pipeline.configs import *
 from fake_sentinel.evaluation.evaulator import evaluate
 
 
-def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
+def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS, eval_fraction=1.0):
     result_dir = Path(result_dir)
     result_dir.mkdir(exist_ok=False)
     model_path = result_dir / 'weights.pth'
@@ -36,6 +37,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
         train_dataset.real_indices = train_dataset.real_indices[:1000]
         val_dataset.real_indices = val_dataset.real_indices[:100]
         num_epochs = 5
+        eval_fraction = 0.05
 
     train_sampler = BatchSampler(train_dataset, BACKWARD_BATCH_SIZE, shuffle=True)
     val_sampler = BatchSampler(val_dataset, FORWARD_BATCH_SIZE, shuffle=False)
@@ -61,7 +63,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS):
 
     # Evaluation
     print('\nEvaluating...')
-    log_loss = evaluate(str(model_path))
+    log_loss = evaluate(str(model_path), eval_fraction=eval_fraction)
     print('Log loss:', log_loss)
 
 
