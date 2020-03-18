@@ -2,7 +2,6 @@ import sys
 import argparse
 import json
 import torch
-import time
 from pathlib import Path
 from torch.utils.data import DataLoader
 
@@ -11,11 +10,12 @@ from fake_sentinel.data.loading.dataset import FaceCropDataset
 from fake_sentinel.data.loading.sampler import BatchSampler
 from fake_sentinel.model.classifier import create_classifier
 from fake_sentinel.train.trainer import train_model
-from fake_sentinel.pipeline.configs import *
+from fake_sentinel.pipeline.configs import CONFIGS
 from fake_sentinel.evaluation.evaulator import evaluate
+from fake_sentinel.report.report_writer import write_notebook_report
 
 
-def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS, eval_fraction=1.0):
+def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['EPOCHS'], eval_fraction=1.0):
     result_dir = Path(result_dir)
     result_dir.mkdir(exist_ok=False)
     model_path = result_dir / 'weights.pth'
@@ -28,7 +28,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS, ev
     print('\nLoading Data...')
     df = load_crop_dataframe()
 
-    train_df, val_df = split_train_val(df, val_fraction=VAL_FRACTION, seed=VAL_SEED)
+    train_df, val_df = split_train_val(df, val_fraction=CONFIGS['VAL_FRACTION'], seed=CONFIGS['VAL_SEED'])
 
     train_dataset = FaceCropDataset(train_df, 'train')
     val_dataset = FaceCropDataset(val_df, 'val')
@@ -39,8 +39,8 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=EPOCHS, ev
         num_epochs = 5
         eval_fraction = 0.05
 
-    train_sampler = BatchSampler(train_dataset, BACKWARD_BATCH_SIZE, shuffle=True)
-    val_sampler = BatchSampler(val_dataset, FORWARD_BATCH_SIZE, shuffle=False)
+    train_sampler = BatchSampler(train_dataset, CONFIGS['BACKWARD_BATCH_SIZE'], shuffle=True)
+    val_sampler = BatchSampler(val_dataset, CONFIGS['FORWARD_BATCH_SIZE'], shuffle=False)
 
     train_loader = DataLoader(train_dataset, batch_sampler=train_sampler, num_workers=4)
     val_loader = DataLoader(val_dataset, batch_sampler=val_sampler, num_workers=4)
