@@ -2,6 +2,7 @@ import sys
 import argparse
 import json
 import torch
+import time
 from pathlib import Path
 from torch.utils.data import DataLoader
 
@@ -16,10 +17,12 @@ from fake_sentinel.report.report_writer import write_notebook_report
 
 
 def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['EPOCHS'], eval_fraction=1.0):
+    report_data = {}
     result_dir = Path(result_dir)
     result_dir.mkdir(exist_ok=False)
     model_path = result_dir / 'weights.pth'
     history_path = result_dir / 'history.json'
+    report_path = result_dir / 'report.ipynb'
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print('\nUsing device:', device)
@@ -63,8 +66,17 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
 
     # Evaluation
     print('\nEvaluating...')
+    since = time.time()
     log_loss = evaluate(str(model_path), eval_fraction=eval_fraction)
+    avg_time = (time.time() - since) / (400 * eval_fraction)
+    report_data['eval_loss'] = log_loss
+    report_data['eval_time'] = avg_time
+    print(report_data)  # TODO: delete
     print('Log loss:', log_loss)
+
+    # Report
+    print('\nGenerating Report...')
+    write_notebook_report(result_dir, report_data, report_path)
 
 
 def main(argv):
