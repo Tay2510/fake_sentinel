@@ -71,7 +71,6 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     avg_time = (time.time() - since) / (400 * eval_fraction)
     report_data['eval_loss'] = log_loss
     report_data['eval_time'] = avg_time
-    print(report_data)  # TODO: delete
     print('Log loss:', log_loss)
 
     # Report
