@@ -9,6 +9,8 @@ DFDC_DATAFRAME_FILE = PREPROCESSED_FILE_DIR / 'dfdc.csv'
 
 FACE_CROP_TABLE = PREPROCESSED_FILE_DIR / 'crop_table.pkl'
 
+VAL_SPLIT_LIST = PREPROCESSED_FILE_DIR / 'val_splits.pkl'
+
 
 # symbolic links to the datasets
 DFDC_TRAIN_VIDEO_DIR = DATASET_DIR / 'videos'
