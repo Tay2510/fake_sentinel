@@ -1,9 +1,10 @@
 import random
+import pickle
 import pandas as pd
 from pathlib import Path
 
 from fake_sentinel.data.tags import NO_FACE_CROPS
-from fake_sentinel.data.paths import DFDC_DATAFRAME_FILE, DFDC_TRAIN_VIDEO_DIR, FACE_CROP_DIR
+from fake_sentinel.data.paths import DFDC_DATAFRAME_FILE, DFDC_TRAIN_VIDEO_DIR, FACE_CROP_DIR, VAL_SPLIT_LIST
 
 
 def load_dfdc_dataframe(metadata_file=DFDC_DATAFRAME_FILE, source_dir=DFDC_TRAIN_VIDEO_DIR, replace_nan=True):
@@ -30,24 +31,28 @@ def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DI
     return df
 
 
-def split_train_val(df, val_fraction=0.1, seed=1337):
+def split_train_val(df, val_fraction=1.0, seed=1337):
     df_originals = get_originals(df)
 
     test_originals = list(get_originals(df[df.split == 'val'])['original'].unique())   # 200 REAL from public test
     train_originals = list(df_originals[~df_originals['original'].isin(test_originals)]['original'].unique())
 
-    random.Random(seed).shuffle(train_originals)
-    cut_off = int(val_fraction * len(train_originals))
-
-    val_originals = train_originals[-cut_off:] + test_originals
-    train_originals = train_originals[:-cut_off]
-
     df_train = df[df['original'].isin(train_originals)]
-    df_val = df[df['original'].isin(val_originals)]
 
-    assert len(df_train) + len(df_val) == len(df)
+    val_originals = get_val_originals()
+    random.Random(seed).shuffle(val_originals)
+    cut_off = int(val_fraction * len(val_originals))
+    val_originals = val_originals[:cut_off]
+
+    df_val = df_train[df_train['original'].isin(val_originals)]
+    df_train = df_train[~df_train['original'].isin(val_originals)]
 
     return df_train, df_val
+
+
+def get_val_originals(val_splits_path=VAL_SPLIT_LIST):
+    val_splits_list = pickle.load(Path(val_splits_path).open('rb'))
+    return val_splits_list
 
 
 def over_sampling_real_faces(df, factor=4):
