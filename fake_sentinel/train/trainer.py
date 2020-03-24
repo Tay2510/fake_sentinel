@@ -1,6 +1,7 @@
 import time
 import copy
 import torch
+from tqdm import tqdm
 
 from fake_sentinel.train.criteria import get_criteria
 
@@ -22,14 +23,17 @@ def train_model(model, dataloaders, device, save_path, num_epochs=10):
         for phase in ['train', 'val']:
             if phase == 'train':
                 model.train()  # Set model to training mode
+                progress = tqdm(iter(dataloaders[phase]), leave=False, total=len(dataloaders[phase]))
             else:
                 model.eval()  # Set model to evaluate mode
+                progress = iter(dataloaders[phase])
 
             running_loss = 0.0
             sample_counts = 0
+            epoch_loss = 0
 
             # Iterate over data.
-            for i, (inputs, labels) in enumerate(dataloaders[phase]):
+            for i, (inputs, labels) in enumerate(progress, 1):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
@@ -52,7 +56,10 @@ def train_model(model, dataloaders, device, save_path, num_epochs=10):
                 running_loss += loss.item() * inputs.size(0)
                 sample_counts += inputs.size(0)
 
-            epoch_loss = running_loss / sample_counts
+                epoch_loss = running_loss / sample_counts
+
+                if isinstance(progress, tqdm):
+                    progress.set_postfix(loss='{:.4f}'.format(epoch_loss))
 
             # deep copy the model
             if phase == 'val' and epoch_loss < lowest_loss:
