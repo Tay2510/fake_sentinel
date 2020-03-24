@@ -53,7 +53,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
 
     # Model
     print('\nCreating Model...')
-    model = create_classifier()
+    model = create_classifier(pretrained=CONFIGS['PRETRAINED'], freeze_features=CONFIGS['FREEZE_FEATURES'])
     model.to(device)
 
     # Training

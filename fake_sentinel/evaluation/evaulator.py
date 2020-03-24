@@ -36,7 +36,7 @@ def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_p
 
     results = {}
     transform = INCEPTION_TRANSFORMS['val']
-    classifier = create_classifier(pretrained=False)
+    classifier = create_classifier(pretrained=False, freeze_features=False)
     classifier.load_state_dict(torch.load(model_path))
     classifier.to(device)
     classifier.eval()
