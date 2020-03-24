@@ -38,7 +38,7 @@ def split_train_val(df, mode='random', val_fraction=1.0, seed=1337):
     train_originals = list(df_originals[~df_originals['original'].isin(test_originals)]['original'].unique())
 
     if mode == 'random':
-        basic_val_fraction = 0.2
+        basic_val_fraction = 0.15
         random.Random(seed).shuffle(train_originals)
         cut_off = int(basic_val_fraction * val_fraction * len(train_originals))
 
