@@ -6,7 +6,7 @@ CONFIGS = {
     'BACKWARD_BATCH_SIZE': 32,
     'FORWARD_BATCH_SIZE': 128,
 
-    'EPOCHS': 20,
+    'EPOCHS': 12,
 
     'INITIAL_LR': 0.001,
     'MOMENTUM': 0.9
