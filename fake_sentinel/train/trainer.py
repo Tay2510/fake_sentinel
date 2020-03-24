@@ -81,6 +81,9 @@ def train_model(model, dataloaders, device, save_path, num_epochs=10):
 
     print('Best val loss {:4f}'.format(lowest_loss))
 
+    # record the lowest validation loss
+    history['best_val_loss'] = lowest_loss
+
     # load best model weights
     model.load_state_dict(best_model_wts)
 

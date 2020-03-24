@@ -17,11 +17,13 @@ def display_training_curve(result_dir_path):
     with history_path.open('r') as f:
         history = json.load(f)
 
-    plt.plot(history['train'], 'b', label='train')
-    plt.plot(history['val'], 'r', label='val')
+    plt.plot(history['train'], 'o:', label='train')
+    plt.plot(history['val'], 'o:', label='val')
+    plt.hlines(history['best_val_loss'], xmin=0, xmax=len(history['train']) - 1, colors='k', linestyles='--')
 
     plt.xlabel('epoch')
     plt.ylabel('loss')
+    plt.title('Best val loss = {:.4f}'.format(history['best_val_loss']))
     plt.legend()
     plt.show()
 
