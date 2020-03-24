@@ -14,6 +14,6 @@ CONFIGS = {
 
     # Training
     'EPOCHS': 12,
-    'INITIAL_LR': 0.001,
-    'MOMENTUM': 0.9
+    'INITIAL_LR': 0.004,
+    'MOMENTUM': 0.85
 }
