@@ -31,7 +31,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     print('\nLoading Data...')
     df = load_crop_dataframe()
 
-    train_df, val_df = split_train_val(df, val_fraction=CONFIGS['VAL_FRACTION'], seed=CONFIGS['VAL_SEED'])
+    train_df, val_df = split_train_val(df, mode=CONFIGS['VAL_MODE'], val_fraction=CONFIGS['VAL_FRACTION'], seed=CONFIGS['VAL_SEED'])
 
     train_dataset = FaceCropDataset(train_df, 'train')
     val_dataset = FaceCropDataset(val_df, 'val')

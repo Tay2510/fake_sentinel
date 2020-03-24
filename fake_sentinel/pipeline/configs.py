@@ -1,4 +1,5 @@
 CONFIGS = {
+    'VAL_MODE': 'random',  # 'random' / 'chunk'
     'VAL_FRACTION': 1.0,
     'VAL_SEED': 1337,
 

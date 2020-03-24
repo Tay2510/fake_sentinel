@@ -31,21 +31,36 @@ def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DI
     return df
 
 
-def split_train_val(df, val_fraction=1.0, seed=1337):
+def split_train_val(df, mode='random', val_fraction=1.0, seed=1337):
     df_originals = get_originals(df)
 
     test_originals = list(get_originals(df[df.split == 'val'])['original'].unique())   # 200 REAL from public test
     train_originals = list(df_originals[~df_originals['original'].isin(test_originals)]['original'].unique())
 
-    df_train = df[df['original'].isin(train_originals)]
+    if mode == 'random':
+        basic_val_fraction = 0.2
+        random.Random(seed).shuffle(train_originals)
+        cut_off = int(basic_val_fraction * val_fraction * len(train_originals))
 
-    val_originals = get_val_originals()
-    random.Random(seed).shuffle(val_originals)
-    cut_off = int(val_fraction * len(val_originals))
-    val_originals = val_originals[:cut_off]
+        val_originals = train_originals[-cut_off:] + test_originals
+        train_originals = train_originals[:-cut_off]
 
-    df_val = df_train[df_train['original'].isin(val_originals)]
-    df_train = df_train[~df_train['original'].isin(val_originals)]
+        df_train = df[df['original'].isin(train_originals)]
+        df_val = df[df['original'].isin(val_originals)]
+
+    elif mode == 'chunk':
+        df_train = df[df['original'].isin(train_originals)]
+
+        val_originals = get_val_originals()
+        random.Random(seed).shuffle(val_originals)
+        cut_off = int(val_fraction * len(val_originals))
+        val_originals = val_originals[:cut_off]
+
+        df_val = df_train[df_train['original'].isin(val_originals)]
+        df_train = df_train[~df_train['original'].isin(val_originals)]
+
+    else:
+        raise NotImplementedError
 
     return df_train, df_val
 
