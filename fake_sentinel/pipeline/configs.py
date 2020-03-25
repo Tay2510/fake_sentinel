@@ -9,6 +9,7 @@ CONFIGS = {
     'FORWARD_BATCH_SIZE': 128,
 
     # Model
+    'MODEL_NAME': 'xception',
     'PRETRAINED': True,
     'FREEZE_FEATURES': False,
 
