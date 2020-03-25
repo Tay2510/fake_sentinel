@@ -12,7 +12,7 @@ CONFIGS = {
     'MODEL_NAME': 'xception',
     'PRETRAINED': True,
     'FREEZE_FEATURES': False,
-    'REGULARIZATION': 0.005,
+    'REGULARIZATION': 0,
 
     # Training
     'EPOCHS': 12,
