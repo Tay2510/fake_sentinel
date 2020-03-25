@@ -58,10 +58,15 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
                               freeze_features=CONFIGS['FREEZE_FEATURES'])
     model.to(device)
 
+    params_to_update = model.parameters()
+    criterion = torch.nn.functional.binary_cross_entropy_with_logits
+    optimizer = torch.optim.SGD(params_to_update, lr=CONFIGS['INITIAL_LR'],
+                                momentum=CONFIGS['MOMENTUM'], weight_decay=CONFIGS['REGULARIZATION'])
+
     # Training
     print('\nTraining...')
-    model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader},
-                                 device=device, save_path=model_path, num_epochs=num_epochs)
+    model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader}, device=device,
+                                 criterion=criterion, optimizer=optimizer, save_path=model_path, num_epochs=num_epochs)
 
     with open(str(history_path), 'w') as f:
         json.dump(history, f)
