@@ -10,6 +10,8 @@ LABEL_ENCODER = {
     'REAL': 0
 }
 
+SMOOTHING_EPISLON = 0.05
+
 
 class FaceCropDataset(Dataset):
     def __init__(self, dataframe, mode='train'):
@@ -35,7 +37,7 @@ class FaceCropDataset(Dataset):
         image = read_image(image_file)
         label = LABEL_ENCODER[sample_label]
         X = self.image_transforms(image)
-        y = label
+        y = label * (1 - SMOOTHING_EPISLON) + (1 - label) * SMOOTHING_EPISLON
 
         return X, y
 
