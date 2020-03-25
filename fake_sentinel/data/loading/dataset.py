@@ -12,7 +12,7 @@ LABEL_ENCODER = {
 
 
 class FaceCropDataset(Dataset):
-    def __init__(self, dataframe, mode='train'):
+    def __init__(self, dataframe, mode='train', smoothing_epsilon=0):
         dataframe = dataframe.reset_index(drop=True)
         self.sampler = CropSampler()
         self.image_transforms = INCEPTION_TRANSFORMS[mode]
@@ -21,6 +21,7 @@ class FaceCropDataset(Dataset):
         self.fake_mapping = build_real_fake_index_mapping(dataframe)
         self.real_indices = list(self.fake_mapping.keys())
         self.length = len(dataframe)
+        self.smoothing_epislon = smoothing_epsilon
 
     def sample_fake(self, real_idx):
         candidates = self.fake_mapping[real_idx]
@@ -35,7 +36,7 @@ class FaceCropDataset(Dataset):
         image = read_image(image_file)
         label = LABEL_ENCODER[sample_label]
         X = self.image_transforms(image)
-        y = label
+        y = label * (1 - self.smoothing_epislon) + (1 - label) * self.smoothing_epislon
 
         return X, y
 

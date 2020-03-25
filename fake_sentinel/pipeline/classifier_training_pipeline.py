@@ -33,8 +33,8 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
 
     train_df, val_df = split_train_val(df, mode=CONFIGS['VAL_MODE'], val_fraction=CONFIGS['VAL_FRACTION'], seed=CONFIGS['VAL_SEED'])
 
-    train_dataset = FaceCropDataset(train_df, 'train')
-    val_dataset = FaceCropDataset(val_df, 'val')
+    train_dataset = FaceCropDataset(train_df, 'train', smoothing_epsilon=CONFIGS['SMOOTHING_EPSILON'])
+    val_dataset = FaceCropDataset(val_df, 'val', smoothing_epsilon=CONFIGS['SMOOTHING_EPSILON'])
 
     if test_mode:
         train_dataset.real_indices = train_dataset.real_indices[:1000]
@@ -61,7 +61,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     params_to_update = model.parameters()
     criterion = torch.nn.functional.binary_cross_entropy_with_logits
     optimizer = torch.optim.SGD(params_to_update, lr=CONFIGS['INITIAL_LR'],
-                                momentum=CONFIGS['MOMENTUM'], weight_decay=CONFIGS['REGULARIZATION'])
+                                momentum=CONFIGS['MOMENTUM'], weight_decay=CONFIGS['L2_REGULARIZATION'])
 
     # Training
     print('\nTraining...')

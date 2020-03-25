@@ -11,8 +11,11 @@ CONFIGS = {
     # Model
     'MODEL_NAME': 'xception',
     'PRETRAINED': True,
+
+    # Generalization
     'FREEZE_FEATURES': False,
-    'REGULARIZATION': 0,
+    'L2_REGULARIZATION': 0,
+    'SMOOTHING_EPSILON': 0,
 
     # Training
     'EPOCHS': 12,
