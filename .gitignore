@@ -4,3 +4,7 @@
 *.out
 *.pth
 *.json
+*.ipynb
+*.html
+
+!fake_sentinel/data/resources/*
