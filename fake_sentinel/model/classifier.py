@@ -10,13 +10,8 @@ def create_classifier(model_name='xception', pretrained=True, freeze_features=Fa
 
 
 def get_basic_model(model_name, pretrained=True, freeze_features=False):
-    if pretrained:
-        pretrained_data = 'imagenet'
-    else:
-        pretrained_data = None
-
     if model_name == 'xception':
-        model = xception(num_classes=1000, pretrained=pretrained_data)
+        model = xception(pretrained=pretrained)
 
         if freeze_features:
             for parameter in model.parameters():
@@ -30,8 +25,6 @@ def get_basic_model(model_name, pretrained=True, freeze_features=False):
     else:
         raise NotImplementedError
 
-    # Handle the primary net
-    num_features = model.last_linear.in_features
-    model.last_linear = nn.Linear(num_features, 1)
+    model.fc = nn.Linear(model.fc.in_features, 1)
 
     return model

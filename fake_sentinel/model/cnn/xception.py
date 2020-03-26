@@ -201,7 +201,7 @@ class Xception(nn.Module):
 
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
-        x = self.last_linear(x)
+        x = self.fc(x)
         return x
 
     def forward(self, input):
@@ -210,14 +210,10 @@ class Xception(nn.Module):
         return x
 
 
-def xception(num_classes=1000, pretrained='imagenet'):
-    model = Xception(num_classes=num_classes)
+def xception(pretrained=True):
+    model = Xception()
     if pretrained:
-        settings = pretrained_settings['xception'][pretrained]
-        assert num_classes == settings['num_classes'], \
-            "num_classes should be {}, but is {}".format(settings['num_classes'], num_classes)
-
-        model = Xception(num_classes=num_classes)
+        settings = pretrained_settings['xception']['imagenet']
         model.load_state_dict(model_zoo.load_url(settings['url']))
 
         model.input_space = settings['input_space']
@@ -226,7 +222,4 @@ def xception(num_classes=1000, pretrained='imagenet'):
         model.mean = settings['mean']
         model.std = settings['std']
 
-    # TODO: ugly
-    model.last_linear = model.fc
-    del model.fc
     return model
