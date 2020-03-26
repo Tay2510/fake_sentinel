@@ -1,6 +1,8 @@
 import torch.nn as nn
 
 from fake_sentinel.model.cnn.xception import xception
+from torchvision.models import resnext50_32x4d as resnext50
+from torchvision.models import resnext101_32x8d as resnext101
 
 
 def create_classifier(model_name='xception', pretrained=True, freeze_features=False):
@@ -22,6 +24,13 @@ def get_basic_model(model_name, pretrained=True, freeze_features=False):
 
             for parameter in model.conv4.parameters():
                 parameter.requires_grad = True
+
+    elif model_name == 'resnext50':
+        model = resnext50(pretrained=pretrained)
+
+    elif model_name == 'resnext101':
+        model = resnext101(pretrained=pretrained)
+
     else:
         raise NotImplementedError
 
