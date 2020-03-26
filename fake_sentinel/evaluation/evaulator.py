@@ -6,7 +6,7 @@ from sklearn.metrics import log_loss
 from fake_sentinel.face.detection.facenet.utils import merge_batch, FaceNetResult
 from fake_sentinel.face.detection.facenet.extract_faces import FaceExtractor
 from fake_sentinel.face.sampling.algorithm import get_tracked_faces, score_faces, sample_tracked_faces, crop_faces
-from fake_sentinel.data.loading.transforms import INCEPTION_TRANSFORMS
+from fake_sentinel.data.loading.transforms import get_image_transforms
 from fake_sentinel.data.utils.video_utils import sample_video_frames
 from fake_sentinel.data.query import load_dfdc_dataframe
 from fake_sentinel.data.loading.dataset import LABEL_ENCODER
@@ -35,7 +35,7 @@ def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_p
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     results = {}
-    transform = INCEPTION_TRANSFORMS['val']
+    transform = get_image_transforms('val')
     classifier = create_classifier(pretrained=False, freeze_features=False)
     classifier.load_state_dict(torch.load(model_path))
     classifier.to(device)
