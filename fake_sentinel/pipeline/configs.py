@@ -9,6 +9,7 @@ CONFIGS = {
     'FORWARD_BATCH_SIZE': 128,
 
     # Model
+    'INPUT_SHAPE': (299, 299),
     'MODEL_NAME': 'xception',
     'PRETRAINED': True,
 
