@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import random
+from pathlib import Path
 from sklearn.metrics import log_loss
 
 from fake_sentinel.face.detection.facenet.utils import merge_batch, FaceNetResult
@@ -36,7 +37,7 @@ def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_p
 
     results = {}
     transform = get_image_transforms('val')
-    classifier = create_classifier(pretrained=False, freeze_features=False)
+    classifier = create_classifier(model_name=Path(model_path).stem, pretrained=False, freeze_features=False)
     classifier.load_state_dict(torch.load(model_path))
     classifier.to(device)
     classifier.eval()

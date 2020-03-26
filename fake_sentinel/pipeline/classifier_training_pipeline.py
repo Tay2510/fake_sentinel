@@ -20,7 +20,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     report_data = {}
     result_dir = Path(result_dir)
     result_dir.mkdir(exist_ok=False)
-    model_path = result_dir / 'weights.pth'
+    model_path = result_dir / '{}.pth'.format(CONFIGS['MODEL_NAME'])
     history_path = result_dir / 'history.json'
     report_path = result_dir / 'report.ipynb'
 
