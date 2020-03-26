@@ -12,6 +12,7 @@ CONFIGS = {
     'INPUT_SHAPE': (299, 299),
     'MODEL_NAME': 'xception',
     'PRETRAINED': True,
+    'TRAIN_LOSS': 'BCE',  # 'BCE' / 'Focal'
 
     # Generalization
     'FREEZE_FEATURES': False,

@@ -14,6 +14,7 @@ from fake_sentinel.train.trainer import train_model
 from fake_sentinel.pipeline.configs import CONFIGS
 from fake_sentinel.evaluation.evaulator import evaluate
 from fake_sentinel.report.report_writer import write_notebook_report
+from fake_sentinel.train import losses
 
 
 def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['EPOCHS'], eval_fraction=1.0):
@@ -59,14 +60,22 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     model.to(device)
 
     params_to_update = model.parameters()
-    criterion = torch.nn.functional.binary_cross_entropy_with_logits
+
+    if CONFIGS['TRAIN_LOSS'] == 'Focal':
+        train_criterion = losses.FocalLoss()
+    else:
+        train_criterion = torch.nn.functional.binary_cross_entropy
+
+    val_criterion = torch.nn.functional.binary_cross_entropy
+
     optimizer = torch.optim.SGD(params_to_update, lr=CONFIGS['INITIAL_LR'],
                                 momentum=CONFIGS['MOMENTUM'], weight_decay=CONFIGS['L2_REGULARIZATION'])
 
     # Training
     print('\nTraining...')
     model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader}, device=device,
-                                 criterion=criterion, optimizer=optimizer, save_path=model_path, num_epochs=num_epochs)
+                                 train_criterion=train_criterion, val_criterion=val_criterion,
+                                 optimizer=optimizer, save_path=model_path, num_epochs=num_epochs)
 
     with open(str(history_path), 'w') as f:
         json.dump(history, f)

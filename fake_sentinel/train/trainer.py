@@ -4,7 +4,7 @@ import torch
 from tqdm import tqdm
 
 
-def train_model(model, dataloaders, device, criterion, optimizer, save_path, num_epochs=10):
+def train_model(model, dataloaders, device, train_criterion, val_criterion, optimizer, save_path, num_epochs=10):
     history = {'train': [], 'val': []}
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -39,13 +39,14 @@ def train_model(model, dataloaders, device, criterion, optimizer, save_path, num
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs = model(inputs).squeeze()
+                    outputs = torch.sigmoid(model(inputs)).squeeze()
 
-                    loss = criterion(outputs, labels.type_as(outputs))
+                    loss = val_criterion(outputs, labels.type_as(outputs))
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
-                        loss.backward()
+                        train_loss = train_criterion(outputs, labels.type_as(outputs))
+                        train_loss.backward()
                         optimizer.step()
 
                 # statistics
