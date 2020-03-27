@@ -4,7 +4,9 @@ import torch
 from tqdm import tqdm
 
 
-def train_model(model, dataloaders, device, train_criterion, val_criterion, optimizer, save_path, num_epochs=10):
+def train_model(model, dataloaders, device, train_criterion, val_criterion,
+                optimizer, lr_scheduler, save_path, num_epochs=10):
+
     history = {'train': [], 'val': []}
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -56,13 +58,17 @@ def train_model(model, dataloaders, device, train_criterion, val_criterion, opti
                 epoch_loss = running_loss / sample_counts
 
                 if isinstance(progress, tqdm):
-                    progress.set_postfix(loss='{:.4f}'.format(epoch_loss))
+                    progress.set_postfix(loss='{:.4f}'.format(epoch_loss),
+                                         lr=optimizer.param_groups[0]['lr'])
 
-            # deep copy the model
-            if phase == 'val' and epoch_loss < lowest_loss:
-                lowest_loss = epoch_loss
-                best_model_wts = copy.deepcopy(model.state_dict())
-                torch.save(best_model_wts, str(save_path))
+            # Validation
+            if phase == 'val':
+                lr_scheduler.step(epoch_loss)
+
+                if epoch_loss < lowest_loss:
+                    lowest_loss = epoch_loss
+                    best_model_wts = copy.deepcopy(model.state_dict())
+                    torch.save(best_model_wts, str(save_path))
 
             history[phase].append(epoch_loss)
 
