@@ -77,7 +77,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     print('\nTraining...')
     model, history = train_model(model=model, dataloaders={'train': train_loader, 'val': val_loader}, device=device,
                                  train_criterion=train_criterion, val_criterion=val_criterion, optimizer=optimizer,
-                                 lr_scheduler=lr_scheduler, save_path=model_path, num_epochs=num_epochs)
+                                 save_path=model_path, lr_scheduler=lr_scheduler, num_epochs=num_epochs)
 
     with open(str(history_path), 'w') as f:
         json.dump(history, f)

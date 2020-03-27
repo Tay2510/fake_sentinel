@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 def train_model(model, dataloaders, device, train_criterion, val_criterion,
-                optimizer, lr_scheduler, save_path, num_epochs=10):
+                optimizer, save_path, lr_scheduler=None, num_epochs=10):
 
     history = {'train': [], 'val': []}
 
@@ -63,7 +63,8 @@ def train_model(model, dataloaders, device, train_criterion, val_criterion,
 
             # Validation
             if phase == 'val':
-                lr_scheduler.step(epoch_loss)
+                if lr_scheduler is not None:
+                    lr_scheduler.step(epoch_loss)
 
                 if epoch_loss < lowest_loss:
                     lowest_loss = epoch_loss
