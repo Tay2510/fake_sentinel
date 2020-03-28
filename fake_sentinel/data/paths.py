@@ -2,14 +2,16 @@ from pathlib import Path
 
 DATASET_DIR = Path(__file__).parents[2] / 'datasets'
 
-PREPROCESSED_FILE_DIR = Path(__file__).parent / 'resources'
+RESOURCE_FILE_DIR = Path(__file__).parent / 'resources'
 
 
-DFDC_DATAFRAME_FILE = PREPROCESSED_FILE_DIR / 'dfdc.csv'
+DFDC_DATAFRAME_FILE = RESOURCE_FILE_DIR / 'dfdc.csv'
 
-FACE_CROP_TABLE = PREPROCESSED_FILE_DIR / 'crop_table.pkl'
+FACE_CROP_TABLE = RESOURCE_FILE_DIR / 'crop_table.pkl'
 
-VAL_SPLIT_LIST = PREPROCESSED_FILE_DIR / 'val_splits.pkl'
+VAL_SPLIT_LIST = RESOURCE_FILE_DIR / 'val_splits.pkl'
+
+AFLW_PRETRAINED_HRNET = RESOURCE_FILE_DIR / 'HR18-AFLW.pth'
 
 
 # symbolic links to the datasets
