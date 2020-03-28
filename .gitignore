@@ -8,3 +8,4 @@
 *.html
 
 !fake_sentinel/data/resources/*
+!fake_sentinel/model/cnn/*
