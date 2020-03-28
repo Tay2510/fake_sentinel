@@ -31,16 +31,15 @@ def load_crop_dataframe(metadata_file=DFDC_DATAFRAME_FILE, crop_dir=FACE_CROP_DI
     return df
 
 
-def split_train_val(df, mode='random', val_fraction=1.0, seed=1337):
+def split_train_val(df, mode='random', val_fraction=0.1, seed=1337):
     df_originals = get_originals(df)
 
     test_originals = list(get_originals(df[df.split == 'val'])['original'].unique())   # 200 REAL from public test
     train_originals = list(df_originals[~df_originals['original'].isin(test_originals)]['original'].unique())
 
     if mode == 'random':
-        basic_val_fraction = 0.1
         random.Random(seed).shuffle(train_originals)
-        cut_off = int(basic_val_fraction * val_fraction * len(train_originals))
+        cut_off = int(val_fraction * len(train_originals))
 
         val_originals = train_originals[-cut_off:] + test_originals
         train_originals = train_originals[:-cut_off]

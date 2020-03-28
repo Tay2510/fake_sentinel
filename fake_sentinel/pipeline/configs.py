@@ -1,7 +1,7 @@
 CONFIGS = {
     # Data
     'VAL_MODE': 'random',  # 'random' / 'chunk'
-    'VAL_FRACTION': 1.0,
+    'VAL_FRACTION': 0.1,  # P.S. behavior differently when using 'chunk' mode
     'VAL_SEED': 1337,
 
     # Batching
@@ -9,8 +9,8 @@ CONFIGS = {
     'FORWARD_BATCH_SIZE': 128,
 
     # Model
-    'INPUT_SHAPE': (299, 299),
-    'MODEL_NAME': 'xception',
+    'INPUT_SHAPE': (299, 299),  # 299*299 for Xception, 224*224 for ResNext
+    'MODEL_NAME': 'xception',  # 'xception' / 'resnext50' / 'resnext101'
     'PRETRAINED': True,
     'TRAIN_LOSS': 'BCE',  # 'BCE' / 'Focal'
 
