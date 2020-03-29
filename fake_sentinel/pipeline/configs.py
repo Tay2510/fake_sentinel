@@ -9,7 +9,7 @@ CONFIGS = {
     'FORWARD_BATCH_SIZE': 128,
 
     # Model
-    'MODEL_NAME': 'xception',
+    'MODEL_NAME': 'resnext50',
     'PRETRAINED': True,
     'TRAIN_LOSS': 'BCE',  # 'BCE' / 'Focal'
 
