@@ -36,7 +36,7 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     train_df, val_df = split_train_val(df, mode=CONFIGS['VAL_MODE'], val_fraction=CONFIGS['VAL_FRACTION'], seed=CONFIGS['VAL_SEED'])
 
     train_dataset = FaceCropDataset(train_df, 'train', smoothing_epsilon=CONFIGS['SMOOTHING_EPSILON'])
-    val_dataset = FaceCropDataset(val_df, 'val', smoothing_epsilon=CONFIGS['SMOOTHING_EPSILON'])
+    val_dataset = FaceCropDataset(val_df, 'val')
 
     if test_mode:
         train_dataset.real_indices = train_dataset.real_indices[:1000]
