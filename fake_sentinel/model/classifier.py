@@ -33,7 +33,7 @@ def get_basic_model(model_name, pretrained=True, freeze_features=False):
         model = resnext101(pretrained=pretrained)
 
     elif model_name == 'hrnet':
-        model = hrnet_classifier(pretrained=pretrained)
+        model = hrnet_classifier(pretrained=pretrained, freeze_features=freeze_features)
 
     else:
         raise NotImplementedError
