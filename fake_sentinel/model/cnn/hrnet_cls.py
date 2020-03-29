@@ -10,15 +10,18 @@ CLS_BN_MOMENTUM = 0.1
 
 
 class HRNetClassifier(HighResolutionNet):
-    def __init__(self, pretrained=True):
+    def __init__(self, n_classes=1000, n_features=2048, pretrained=True):
         super(HRNetClassifier, self).__init__(HRNET_CONFIGS)
 
         if pretrained:
             super(HRNetClassifier, self).init_weights(PRETRAINED_WEIGHT_PATH)
 
+        self.n_classes = n_classes
+        self.n_features = n_features
+
         self.incre_modules, self.downsamp_modules, self.final_layer = self._make_head(self.pre_stage_channels)
 
-        self.classifier = nn.Linear(2048, 1000)
+        self.fc = nn.Linear(self.n_features, self.n_classes)
 
     def _make_head(self, pre_stage_channels):
         head_block = Bottleneck
@@ -46,8 +49,8 @@ class HRNetClassifier(HighResolutionNet):
         downsamp_modules = nn.ModuleList(downsamp_modules)
 
         final_layer = nn.Sequential(
-            nn.Conv2d(in_channels=head_channels[3] * head_block.expansion, out_channels=2048, kernel_size=1, stride=1,
-                padding=0), nn.BatchNorm2d(2048, momentum=CLS_BN_MOMENTUM), nn.ReLU(inplace=True))
+            nn.Conv2d(in_channels=head_channels[3] * head_block.expansion, out_channels=self.n_features, kernel_size=1, stride=1,
+                padding=0), nn.BatchNorm2d(self.n_features, momentum=CLS_BN_MOMENTUM), nn.ReLU(inplace=True))
 
         return incre_modules, downsamp_modules, final_layer
 
@@ -96,7 +99,7 @@ class HRNetClassifier(HighResolutionNet):
         else:
             y = F.avg_pool2d(y, kernel_size=y.size()[2:]).view(y.size(0), -1)
 
-        y = self.classifier(y)
+        y = self.fc(y)
 
         return y
 
