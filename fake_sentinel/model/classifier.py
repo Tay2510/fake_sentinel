@@ -1,8 +1,9 @@
 import torch.nn as nn
-
-from fake_sentinel.model.cnn.xception import xception
 from torchvision.models import resnext50_32x4d as resnext50
 from torchvision.models import resnext101_32x8d as resnext101
+
+from fake_sentinel.model.cnn.xception import xception
+from fake_sentinel.model.cnn.hrnet_cls import hrnet_classifier
 
 
 def create_classifier(model_name='xception', pretrained=True, freeze_features=False):
@@ -30,6 +31,9 @@ def get_basic_model(model_name, pretrained=True, freeze_features=False):
 
     elif model_name == 'resnext101':
         model = resnext101(pretrained=pretrained)
+
+    elif model_name == 'hrnet':
+        model = hrnet_classifier(pretrained=pretrained)
 
     else:
         raise NotImplementedError
