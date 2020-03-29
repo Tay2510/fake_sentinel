@@ -10,11 +10,15 @@ CLS_BN_MOMENTUM = 0.1
 
 
 class HRNetClassifier(HighResolutionNet):
-    def __init__(self, n_classes=1000, n_features=2048, pretrained=True):
+    def __init__(self, n_classes=1000, n_features=2048, pretrained=True, freeze_features=False):
         super(HRNetClassifier, self).__init__(HRNET_CONFIGS)
 
         if pretrained:
             super(HRNetClassifier, self).init_weights(PRETRAINED_WEIGHT_PATH)
+
+        if freeze_features:
+            for parameter in self.parameters():
+                parameter.requires_grad = False
 
         self.n_classes = n_classes
         self.n_features = n_features
@@ -104,7 +108,7 @@ class HRNetClassifier(HighResolutionNet):
         return y
 
 
-def hrnet_classifier(pretrained=True):
-    model = HRNetClassifier(pretrained=pretrained)
+def hrnet_classifier(pretrained=True, freeze_features=False):
+    model = HRNetClassifier(pretrained=pretrained, freeze_features=freeze_features)
 
     return model
