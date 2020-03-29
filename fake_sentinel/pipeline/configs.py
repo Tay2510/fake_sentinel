@@ -1,3 +1,6 @@
+from torchvision import transforms
+
+
 CONFIGS = {
     # Data
     'VAL_MODE': 'random',  # 'random' / 'chunk'
@@ -18,6 +21,7 @@ CONFIGS = {
     'L2_REGULARIZATION': 0,
     'SMOOTHING_EPSILON': 0,
     'MIXED_UP': -1,  # use float number within (0, inf) to activate mixed-up
+    'AUGMENTATION': [transforms.RandomHorizontalFlip()],
 
     # Training
     'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
