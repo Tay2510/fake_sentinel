@@ -28,7 +28,10 @@ CONFIGS = {
     'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
     'EPOCHS': 12,
     'INITIAL_LR': 0.004,
-    'MOMENTUM': 0.85
+    'MOMENTUM': 0.85,
+    'PATIENCE': 4,
+    'LR_FACTOR': 0.1,
+    'MINIMUM_LR': 0.00004
 }
 
 
