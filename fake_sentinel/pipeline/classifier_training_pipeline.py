@@ -15,6 +15,7 @@ from fake_sentinel.pipeline.configs import CONFIGS
 from fake_sentinel.evaluation.evaulator import evaluate
 from fake_sentinel.report.report_writer import write_notebook_report
 from fake_sentinel.train import losses
+from fake_sentinel.train.optims import AdaBound
 
 
 def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['EPOCHS'], eval_fraction=1.0):
@@ -68,8 +69,13 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
 
     val_criterion = torch.nn.functional.binary_cross_entropy
 
-    optimizer = torch.optim.SGD(params_to_update, lr=CONFIGS['INITIAL_LR'],
-                                momentum=CONFIGS['MOMENTUM'], weight_decay=CONFIGS['L2_REGULARIZATION'])
+    if CONFIGS['OPTIMIZER'] == 'SGD':
+        optimizer = torch.optim.SGD(params_to_update, lr=CONFIGS['INITIAL_LR'],
+                                    momentum=CONFIGS['MOMENTUM'], weight_decay=CONFIGS['L2_REGULARIZATION'])
+    elif CONFIGS['OPTIMIZER'] == 'Adabound':
+        optimizer = AdaBound(params_to_update, lr=CONFIGS['INITIAL_LR'], weight_decay=CONFIGS['L2_REGULARIZATION'])
+    else:
+        raise NotImplementedError
 
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=4)
 
