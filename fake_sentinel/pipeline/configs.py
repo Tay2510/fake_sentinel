@@ -22,5 +22,6 @@ CONFIGS = {
     # Training
     'EPOCHS': 12,
     'INITIAL_LR': 0.004,
+    'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
     'MOMENTUM': 0.85
 }
