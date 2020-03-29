@@ -302,6 +302,8 @@ class HighResolutionNet(nn.Module):
         self.stage4, pre_stage_channels = self._make_stage(
             self.stage4_cfg, num_channels, multi_scale_output=True)
 
+        self.pre_stage_channels = pre_stage_channels
+
         final_inp_channels = sum(pre_stage_channels)
 
         self.head = nn.Sequential(
@@ -470,7 +472,7 @@ class HighResolutionNet(nn.Module):
             self.load_state_dict(model_dict)
 
 
-def hrnet(pretrained=True):
+def hrnet_landmark(pretrained=True):
     model = HighResolutionNet(HRNET_CONFIGS)
 
     if pretrained:
