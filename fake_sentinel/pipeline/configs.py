@@ -22,6 +22,7 @@ CONFIGS = {
     'SMOOTHING_EPSILON': 0,
     'MIXED_UP': -1,  # use float number within (0, inf) to activate mixed-up
     'AUGMENTATION': [transforms.RandomHorizontalFlip()],
+    'RANDOM_ERASING': False,
 
     # Training
     'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
