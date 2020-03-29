@@ -17,6 +17,7 @@ CONFIGS = {
     'FREEZE_FEATURES': False,
     'L2_REGULARIZATION': 0,
     'SMOOTHING_EPSILON': 0,
+    'MIXED_UP': -1,  # use float number within (0, inf) to activate mixed-up
 
     # Training
     'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
