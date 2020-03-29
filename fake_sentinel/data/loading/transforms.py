@@ -15,4 +15,7 @@ def get_image_transforms(mode='train', input_shape=INPUT_SHAPE):
 
     transform_sequence = preprocessoing + augmentation + normalization
 
+    if mode == 'train' and CONFIGS['RANDOM_ERASING']:
+        transform_sequence += [transforms.RandomErasing()]
+
     return transforms.Compose(transform_sequence)
