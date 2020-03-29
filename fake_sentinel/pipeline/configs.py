@@ -9,8 +9,7 @@ CONFIGS = {
     'FORWARD_BATCH_SIZE': 128,
 
     # Model
-    'INPUT_SHAPE': (299, 299),  # 299*299 for Xception, 224*224 for ResNext
-    'MODEL_NAME': 'xception',  # 'xception' / 'resnext50' / 'resnext101'
+    'MODEL_NAME': 'xception',
     'PRETRAINED': True,
     'TRAIN_LOSS': 'BCE',  # 'BCE' / 'Focal'
 
@@ -20,8 +19,16 @@ CONFIGS = {
     'SMOOTHING_EPSILON': 0,
 
     # Training
+    'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
     'EPOCHS': 12,
     'INITIAL_LR': 0.004,
-    'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
     'MOMENTUM': 0.85
+}
+
+
+INPUT_SHAPES = {
+    'xception': (299, 299),
+    'hrnet': (256, 256),
+    'resnext50': (224, 224),
+    'resnext101': (224, 224)
 }
