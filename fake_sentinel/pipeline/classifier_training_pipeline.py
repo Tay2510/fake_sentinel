@@ -77,10 +77,15 @@ def run_pipeline(test_mode=False, result_dir='result_dir', num_epochs=CONFIGS['E
     else:
         raise NotImplementedError
 
-    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',
-                                                              factor=CONFIGS['LR_FACTOR'],
-                                                              patience=CONFIGS['PATIENCE'],
-                                                              min_lr=CONFIGS['MINIMUM_LR'])
+    if CONFIGS['LR_SCHEDULER'] == 'Step':
+        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=CONFIGS['LR_STEP_SIZE'],
+                                                       gamma=CONFIGS['LR_FACTOR'])
+    elif CONFIGS['LR_SCHEDULER'] == 'Plateau':
+        lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor=CONFIGS['LR_FACTOR'],
+                                                                  patience=CONFIGS['PATIENCE'],
+                                                                  min_lr=CONFIGS['MINIMUM_LR'])
+    else:
+        raise NotImplementedError
 
     # Training
     print('\nTraining...')

@@ -26,11 +26,15 @@ CONFIGS = {
 
     # Training
     'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
-    'EPOCHS': 32,
+    'EPOCHS': 64,
     'INITIAL_LR': 0.004,
     'MOMENTUM': 0.85,
+
+    # Schedule
+    'LR_SCHEDULER': 'Step',  # 'Step' / 'Plateau'
     'PATIENCE': 4,
     'LR_FACTOR': 0.1,
+    'LR_STEP_SIZE': 24,
     'MINIMUM_LR': 0.00004
 }
 

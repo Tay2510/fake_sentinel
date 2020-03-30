@@ -64,7 +64,10 @@ def train_model(model, dataloaders, device, train_criterion, val_criterion,
             # Validation
             if phase == 'val':
                 if lr_scheduler is not None:
-                    lr_scheduler.step(epoch_loss)
+                    if isinstance(lr_scheduler, torch.optim.lr_scheduler.StepLR):
+                        lr_scheduler.step(epoch)
+                    else:
+                        lr_scheduler.step(epoch_loss)
 
                 if epoch_loss < lowest_loss:
                     lowest_loss = epoch_loss
