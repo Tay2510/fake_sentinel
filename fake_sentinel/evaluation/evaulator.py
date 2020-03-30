@@ -25,22 +25,27 @@ def evaluate(model_path, sampling_interval=5, max_prediction_per_face=20, eval_f
     targets = df['label'].apply(lambda x: LABEL_ENCODER[x])
     targets = np.array(targets, dtype=float)
 
-    predicts = predict_videos(list(df['filename']), model_path, sampling_interval, max_prediction_per_face)
+    models = [(Path(model_path).stem, model_path)]
+    predicts = predict_videos(list(df['filename']), models, sampling_interval, max_prediction_per_face)
     predicts = list(predicts.values())
     predicts = np.array(predicts, dtype=float)
 
     return log_loss(targets, predicts)
 
 
-def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_per_face=5):
+def predict_videos(filenames, models, sampling_interval=5, max_prediction_per_face=20):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     results = {}
     transform = get_image_transforms('val')
-    classifier = create_classifier(model_name=Path(model_path).stem, pretrained=False, freeze_features=False)
-    classifier.load_state_dict(torch.load(model_path))
-    classifier.to(device)
-    classifier.eval()
+    classifiers = []
+
+    for model_name, model_path in models:
+        model = create_classifier(model_name=model_name, pretrained=False, freeze_features=False)
+        model.load_state_dict(torch.load(model_path))
+        model.to(device)
+        model.eval()
+        classifiers.append(model)
 
     detection_results = detect_faces(filenames, sampling_interval)
 
@@ -64,10 +69,16 @@ def predict_videos(filenames, model_path, sampling_interval=10, max_prediction_p
                 X = torch.stack([transform(f) for f in face_crops]).to(device)
 
                 with torch.no_grad():
-                    logits = classifier(X)
-                    p = torch.sigmoid(logits.squeeze())
+                    predictions = []
 
-                    confidence = max(confidence, float(p.mean().cpu().numpy()))
+                    for classifier in classifiers:
+                        logits = classifier(X)
+                        p = torch.sigmoid(logits.squeeze())
+                        predictions.append(p)
+
+                    predictions = torch.stack(predictions)
+
+                    confidence = max(confidence, float(predictions.mean().cpu().numpy()))
 
             results[video_path] = confidence
 
