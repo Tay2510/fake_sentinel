@@ -14,19 +14,19 @@ CONFIGS = {
     # Model
     'MODEL_NAME': 'resnext50',
     'PRETRAINED': True,
-    'TRAIN_LOSS': 'BCE',  # 'BCE' / 'Focal'
+    'TRAIN_LOSS': 'Focal',  # 'BCE' / 'Focal'
 
     # Generalization
     'FREEZE_FEATURES': False,
-    'L2_REGULARIZATION': 0,
+    'L2_REGULARIZATION': 0.0005,
     'SMOOTHING_EPSILON': 0,
-    'MIXED_UP': -1,  # use float number within (0, inf) to activate mixed-up
+    'MIXED_UP': 0.5,  # use float number within (0, inf) to activate mixed-up
     'AUGMENTATION': [transforms.RandomHorizontalFlip()],
-    'RANDOM_ERASING': False,
+    'RANDOM_ERASING': True,
 
     # Training
     'OPTIMIZER': 'SGD',  # 'SGD' / 'Adabound'
-    'EPOCHS': 12,
+    'EPOCHS': 32,
     'INITIAL_LR': 0.004,
     'MOMENTUM': 0.85,
     'PATIENCE': 4,
