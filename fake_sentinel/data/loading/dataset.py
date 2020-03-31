@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 
 from fake_sentinel.data.utils.image_utils import read_image
 from fake_sentinel.data.loading.sampler import CropSampler
-from fake_sentinel.data.loading.transforms import get_image_transforms
+from fake_sentinel.data.loading.transforms import get_image_transforms, INPUT_SHAPE
 
 LABEL_ENCODER = {
     'FAKE': 1,
@@ -49,7 +49,11 @@ class FaceCropDataset(Dataset):
             another_label = LABEL_ENCODER[another_label]
             another_X = self.image_transforms(another_image)
             another_y = another_label * (1 - self.smoothing_epislon) + (1 - another_label) * self.smoothing_epislon
-            X = mix_lambda * X + (1 - mix_lambda) * another_X
+
+            bbx1, bby1, bbx2, bby2 = rand_bbox(INPUT_SHAPE, mix_lambda)
+            mix_lambda = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (INPUT_SHAPE[0] * INPUT_SHAPE[1]))
+
+            X[:, bbx1:bbx2, bby1:bby2] = another_X[:, bbx1:bbx2, bby1:bby2]
             y = mix_lambda * y + (1 - mix_lambda) * another_y
 
         return X, y
@@ -64,3 +68,22 @@ def build_real_fake_index_mapping(df):
     mapping = {real_idx_map[k]: list(v) for k, v in original_groups.groups.items()}
 
     return mapping
+
+
+def rand_bbox(size, lam):
+    W, H = size
+    cut_rat = np.sqrt(1. - lam)
+    cut_w = np.int(W * cut_rat)
+    cut_h = np.int(H * cut_rat)
+
+    # uniform
+    cx = np.random.randint(W)
+    cy = np.random.randint(H)
+
+    bbx1 = np.clip(cx - cut_w // 2, 0, W)
+    bby1 = np.clip(cy - cut_h // 2, 0, H)
+    bbx2 = np.clip(cx + cut_w // 2, 0, W)
+    bby2 = np.clip(cy + cut_h // 2, 0, H)
+
+    return bbx1, bby1, bbx2, bby2
+
